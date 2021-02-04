@@ -5,7 +5,7 @@ from django.views.generic.base import TemplateView
 
 urlpatterns = [
     # 메인 페이지
-    url(r'^$', TemplateView.as_view(template_name='main.html')),
     path('admin/', admin.site.urls),
+    url(r'^$', TemplateView.as_view(template_name='index.html')),
     path('tour/', include('tour.urls'))
 ]
