@@ -1,0 +1,85 @@
+<link rel="stylesheet" href="/static/css/signup.css">
+
+{% extends 'templates/base.html' %}
+{% block container %}
+<div class="uk-padding">
+    <div class="uk-container">
+        <div class="uk-text-center">
+            <div class="uk-card">
+                <div class="uk-card-body">
+                    <div class="user_card">
+                        <div class="uk-card-title">
+                            <h3 id="form-title">회원가입 </h3>
+                            <!-- 회원가입 Validation -->
+                            {% if err_msg  %}
+                            <div class="uk-alert-danger" uk-alert>
+                                <a class="uk-alert-close" uk-close></a>
+                                    <p class="uk-text-small">{{ err_msg }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="uk-text-center form_container">
+                            <form method="POST" action="/signupProcess/">
+                            {% csrf_token %}
+                                <div class="input-group mb-3">
+                                    <div class="input-group-append">
+                                        <div class="uk-margin">
+                                            <div class="uk-inline">
+                                                <div class="input-group-text">
+                                                    <span class="uk-form-icon" uk-icon="icon: user"></span>
+                                                    <input type="text" class="uk-input" name="username" maxlength="150" autofocus required id="id_username" placeholder="닉네임">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <div class="input-group-append">
+                                        <div class="uk-margin">
+                                            <div class="uk-inline">
+                                                <div class="input-group-text">
+                                                    <span class="uk-form-icon" uk-icon="icon: mail"></span>
+                                                    <input type="email" class="uk-input" name="email" required id="id_email" placeholder="이메일">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <div class="input-group-append">
+                                        <div class="uk-margin">
+                                            <div class="uk-inline">
+                                                <div class="input-group-text">
+                                                    <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                                                    <input type="password" class="uk-input" name="password1" required id="id_password1" placeholder="비밀번호">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <div class="input-group-append">
+                                        <div class="uk-margin">
+                                            <div class="uk-inline">
+                                                <div class="input-group-text">
+                                                    <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                                                    <input type="password" class="uk-input" name="password2" required id="id_password2" placeholder="비밀번호 확인">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="uk-text-center mt-3 login_container">
+                                    <input class="uk-button login_btn" type="submit" value="가입하기">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div> <!-- uk-card-body -->
+            </div> <!-- uk-card -->
+        </div> <!-- text-center -->
+    </div> <!-- container -->
+</div> <!-- padding -->
+{% endblock container %}
+

@@ -1,0 +1,28 @@
+.search{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 3rem;
+    background: #ffddd2;
+}
+
+.content {
+    font-family: system-ui, serif;
+    font-size: 2rem;
+    border: 5px solid gray;
+    border-radius: 1rem;
+}
+
+/*.register_form{*/
+/*    width: 350px;*/
+/*    margin-top: auto;*/
+/*    margin-bottom: auto;*/
+/*    background: white;*/
+/*    color: gray;*/
+/*    position: relative;*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    flex-direction: column;*/
+/*    padding: 10px;*/
+/*}*/

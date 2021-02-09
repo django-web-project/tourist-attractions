@@ -2,18 +2,148 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title></title>
     <!-- jQuery CDN -->
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <!-- UIkit core CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.16/dist/css/uikit.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.16/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.16/dist/js/uikit-icons.min.js"></script>
 
-    <!-- Bootstrap CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <!-- static/css -->
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/signup.css">
 
 </head>
 <body>
+<header>
+<!-- navbar -->
+<div class="uk-position-top uk-padding">
+    <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
+        <nav class="uk-navbar-container" uk-navbar>
+            <div class="uk-navbar-left">
+                <ul class="uk-navbar-nav">
+                    <li class="uk-active"><a href="{% url 'home' %}">🎈 서울나들이</a></li>
+                </ul>
+            </div>
+            <div class="uk-navbar-right">
+                <ul class="uk-navbar-nav">
+                    <li>
+                        <a href="#">지역</a>
+                        <div class="uk-navbar-dropdown">
+                            <ul class="uk-nav uk-navbar-dropdown-nav">
+                                {% for gu in gu_list %}
+                                    <li><a href="#">{{ gu.gu_name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#">테마</a>
+                        <div class="uk-navbar-dropdown">
+                            <ul class="uk-nav uk-navbar-dropdown-nav">
+                                {% for category in category_list %}
+                                    <li><a href="#">{{ category.category_name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- 로그인 or 로그아웃? -->
+                    {% if request.session.login_obj %}
+                        <li><a href="{% url 'logout_process' %}">로그아웃</a></li>
+{#                        {% if bye_msg  %}#}
+{#                            <div class="uk-alert-primary" uk-alert>#}
+{#                                <a class="uk-alert-close" uk-close></a>#}
+{#                                <p class="uk-text-small">{{ bye_msg }}</p>#}
+{#                            </div>#}
+{#                        {% endif %}#}
+                    {% else  %}
+                    <!-- Login Modal --->
+                    <li><a href="#modal-example" uk-toggle>로그인</a></li>
+                        <div id="modal-example" uk-modal>
+                            <div class="uk-modal-dialog">
+                                <button class="uk-modal-close-default" type="button" uk-close></button>
+                                <div class="uk-modal-header">
+                                    <h2 class="uk-modal-title uk-text-center" id="form-title">🎈 서울나들이</h2>
+                                </div>
+                                <div class="uk-modal-body">
+
+                                    <!-- messages -->
+
+
+
+                                    <div class="uk-text-center form_container">
+                                        <form method="POST" action="/loginProcess/">
+                                        {% csrf_token %}
+                                            <div class="input-group mb-2">
+                                                <div class="input-group-append">
+                                                    <div class="uk-margin">
+                                                        <div class="uk-inline">
+                                                            <div class="input-group-text">
+                                                                <span class="uk-form-icon" uk-icon="icon: mail"></span>
+                                                                <input type="email" class="uk-input" name="email" required id="id_email" placeholder="이메일">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="input-group mb-2">
+                                                <div class="input-group-append">
+                                                    <div class="uk-margin">
+                                                        <div class="uk-inline">
+                                                            <div class="input-group-text">
+                                                                <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                                                                <input type="password" class="uk-input" name="password" required id="id_password" placeholder="비밀번호">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="uk-text-center mt-3 login_container">
+                                                <input class="uk-button login_btn" type="submit" value="로그인">
+                                            </div>
+
+                                        </form>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <div class="uk-text-center links">
+                                            <p>아직 계정이 없으신가요?</p> <a href="{% url 'signup' %}" class="ml-2">회원가입하기</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+{#                                  <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>#}
+                            </div>
+                        </div>
+                        <!-- Modal End -->
+
+                    <li><a href="#">회원가입</a></li>
+                    {% endif %}
+                </ul>
+
+            </div>
+        </nav>
+    </div>
+    <!-- messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="uk-alert-{{ message.tags }}" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+</header>
+<!-- Navbar End -->
+<main>
 {% block container %}
     <!-- 이 부분만 내용을 바꾸면 됨 -->
 {% endblock %}
+</main>
 </body>
 </html>

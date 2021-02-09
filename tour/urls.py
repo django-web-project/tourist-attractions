@@ -5,10 +5,9 @@ from . import views
 app_name = 'tour'
 
 urlpatterns = [
-    # path('/login', views.login, name='login'),
-    # path('/register', views.register, name='register'),
-    # path('/search/<str:toursite_id>', views.search, name='search'),
-    # path('/detail/<str:review_id>', views.detail, name='detail'),
-    # path('/my-account', views.my_account, name='my_account'),
-    # path('/my-list', views.my_list, name='my_list')
+    # path('search/<str:search_name>', views.search, name='search'),
+    # path('detail/<str:toursite_id>', views.detail, name='detail'),
+    # path('gu/<int:gu_id>', view.gu, name='gu'),
+    # path('category/<int:category_id>', view.category, name='category'),
 ]
+
