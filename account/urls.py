@@ -4,8 +4,10 @@ from . import views
 
 app_name = 'account'
 urlpatterns = [
-    # 메인 페이지
-
+    # localhost:8000/account
+    path('', views.check_login, name='check_login'),
+    path('setting/', views.profile, name='profile'),
+    path('my-list/', views.my_list, name='my_list')
 ]
 
 

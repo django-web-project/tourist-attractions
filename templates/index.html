@@ -13,7 +13,6 @@
 
     <!-- static/css -->
     <link rel="stylesheet" href="/static/css/index.css">
-    <link rel="stylesheet" href="/static/css/signup.css">
 
 </head>
 <body>
@@ -52,7 +51,17 @@
 
                     <!-- 로그인 or 로그아웃? -->
                     {% if request.session.login_obj %}
-                        <li><a href="{% url 'logout_process' %}">로그아웃</a></li>
+                    <li>
+                        <a href="{% url 'account:profile' %}">마이페이지</a>
+                        <div class="uk-navbar-dropdown">
+                            <ul class="uk-nav uk-navbar-dropdown-nav">
+                                <li><a href="{% url 'account:profile' %}">프로필 설정</a></li>
+                                <li><a href="{% url 'account:my_list' %}">내 리뷰들</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li><a href="{% url 'logout_process' %}">로그아웃</a></li>
 {#                        {% if bye_msg  %}#}
 {#                            <div class="uk-alert-primary" uk-alert>#}
 {#                                <a class="uk-alert-close" uk-close></a>#}
@@ -60,64 +69,66 @@
 {#                            </div>#}
 {#                        {% endif %}#}
                     {% else  %}
-                    <!-- Login Modal -->
-                    <li><a href="#modal-example" uk-toggle>로그인</a></li>
-                    <div id="modal-example" uk-modal>
-                        <div class="uk-modal-dialog">
-                            <button class="uk-modal-close-default" type="button" uk-close></button>
-                            <div class="uk-modal-header">
-                                <h2 class="uk-modal-title uk-text-center" id="form-title">🎈 서울나들이</h2>
-                            </div>
-
-                            <!-- messages -->
-
-
-                            <div class="uk-modal-body">
-                                <div class="uk-text-center form_container">
-                                    <form method="POST" action="/loginProcess/">
-                                        {% csrf_token %}
-                                        <div class="input-group mb-2">
-                                            <div class="input-group-append">
-                                                <div class="uk-margin">
-                                                    <div class="uk-inline">
-                                                        <div class="input-group-text">
-                                                            <span class="uk-form-icon" uk-icon="icon: mail"></span>
-                                                            <input type="email" class="uk-input" name="email" required id="id_email" placeholder="이메일">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="input-group mb-2">
-                                            <div class="input-group-append">
-                                                <div class="uk-margin">
-                                                    <div class="uk-inline">
-                                                        <div class="input-group-text">
-                                                            <span class="uk-form-icon" uk-icon="icon: lock"></span>
-                                                            <input type="password" class="uk-input" name="password" required id="id_password" placeholder="비밀번호">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="uk-text-center mt-3 login_container">
-                                            <input class="uk-button login_btn" type="submit" value="로그인">
-                                        </div>
-
-                                    </form>
+                        <!-- Login Modal --->
+                        <li><a href="#modal-example" uk-toggle>로그인</a></li>
+                        <div id="modal-example" uk-modal>
+                            <div class="uk-modal-dialog">
+                                <button class="uk-modal-close-default" type="button" uk-close></button>
+                                <div class="uk-modal-header">
+                                    <h2 class="uk-modal-title uk-text-center" id="form-title">🎈 서울나들이</h2>
                                 </div>
+                                <div class="uk-modal-body">
 
-                                <div class="mt-4" >
-                                    <div class="uk-text-center links">
-                                        <p>아직 계정이 없으신가요?</p> <a href="{% url 'signup' %}" class="ml-2">회원가입하기</a>
+                                    <!-- messages -->
+
+
+
+                                    <div class="uk-text-center form_container">
+                                        <form method="POST" action="/loginProcess/">
+                                            {% csrf_token %}
+                                            <div class="input-group mb-2">
+                                                <div class="input-group-append">
+                                                    <div class="uk-margin">
+                                                        <div class="uk-inline">
+                                                            <div class="input-group-text">
+                                                                <span class="uk-form-icon" uk-icon="icon: mail"></span>
+                                                                <input type="email" class="uk-input" name="email" required id="id_email" placeholder="이메일">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="input-group mb-2">
+                                                <div class="input-group-append">
+                                                    <div class="uk-margin">
+                                                        <div class="uk-inline">
+                                                            <div class="input-group-text">
+                                                                <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                                                                <input type="password" class="uk-input" name="password" required id="id_password" placeholder="비밀번호">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="uk-text-center mt-3 login_container">
+                                                <input class="uk-button login_btn" type="submit" value="로그인">
+                                            </div>
+
+                                        </form>
                                     </div>
-                                </div>
 
+                                    <div class="mt-4">
+                                        <div class="uk-text-center links">
+                                            <p>아직 계정이 없으신가요?</p> <a href="{% url 'signup' %}" class="ml-2">회원가입하기</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                {#                                  <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>#}
                             </div>
                         </div>
-                    </div>
-                    <!-- Modal End -->
+                        <!-- Modal End -->
 
                     <li><a href="{% url 'signup' %}">회원가입</a></li>
                     {% endif %}

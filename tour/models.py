@@ -29,13 +29,6 @@ class Toursite(models.Model):
     def __str__(self):
         return self.toursite_name
 
-class Tuser(models.Model):
-    user_img = models.CharField(max_length=100)
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.user.username
 
 class Review(models.Model):
     review_rate = models.IntegerField(default=0)
