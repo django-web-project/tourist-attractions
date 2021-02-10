@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block container %}
+<div class="uk-section">
+<div class="uk-container">
+<!-- 관광지 상세 설명 -->
+    <article class="uk-comment uk-comment-primary">
+        <header class="uk-comment-header">
+            <div class="uk-grid-medium uk-flex-middle">
+                <div class="uk-width-auto">
+                    <img class="uk-comment-avatar" src="{{ toursite_data.toursite_img }}" width="80" height="80" alt="">
+                </div>
+                <div class="uk-width-expand">
+                    <h4 class="uk-comment-title uk-margin-remove">{{ toursite_data.toursite_name }}</h4>
+                    <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
+                        <li>{{ toursite_data.toursite_address }}</li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+        <div class="uk-comment-body">
+            <p>{{ toursite_data.toursite_detail }}</p>
+        </div>
+    </article>
+    <br>
+<!-- 관광지 상세설명 끝 -->
+
+<!-- 카카오 지도 API -->
+    <div class="uk-container" id="map" style="width:500px;height:400px;"></div>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=49bc75ca54c977b9bf81a7d7d4e4dbd9&libraries=services"></script>
+    <script>
+        var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+        console.log({{ x }})
+        var options = { //지도를 생성할 때 필요한 기본 옵션
+            // 카카오 API가 이상해서 위도, 경도 바뀜
+            center: new kakao.maps.LatLng({{ y }}, {{ x }}), //지도의 중심좌표.
+            level: 3 //지도의 레벨(확대, 축소 정도)
+        };
+
+        var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+    </script><br>
+<!-- 카카오 지도 API 끝-->
+
+<!-- 날씨 출력 -->
+    <div class="uk-card uk-card-default uk-card-body">
+    <table class="uk-table uk-table-divider">
+        <caption class="uk-text-bold">{{ toursite_data.toursite_name }} 주변 날씨 예보</caption>
+        <thead>
+            <tr>
+                {% for time in weather_data.time %}
+                <th>{{ time }}시 날씨</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 항목별 데이터 출력 -->
+            {% for key, val in weather_data.items %}
+                {% if key != 'time' %}
+                    <tr>
+                        {% for list in val %}
+                            <td>{{ key }}: {{ list }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+<!-- 날씨 출력 끝 -->
+
+<!-- 날씨 출력 2 -->
+<button class="uk-button uk-button-default">날씨 확인</button>
+<!-- dropdown 안에 만들어둔 표 집어 넣기 -->
+<div uk-dropdown>
+    <div class="uk-card uk-card-default uk-card-body">
+    <table class="uk-table uk-table-divider">
+        <caption class="uk-text-bold">{{ toursite_data.toursite_name }} 주변 날씨 예보</caption>
+        <thead>
+            <tr>
+                <th></th>
+                {% for time in weather_data.time %}
+                <th class="uk-text-center">{{ time }}시</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 항목별 데이터 출력 -->
+            {% for key, val in weather_data.items %}
+                {% if key != 'time' %}
+                    <tr>
+                        <td class="uk-text-center">{{ key }}</td>
+                        {% for list in val %}
+                            <td class="uk-text-center">{{ list }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+<!-- 날씨 출력 2 끝-->
+
+<!-- 리뷰출력 -->
+    <ul class="uk-comment-list">
+    {% for data in review_data %}
+        <li>
+            <article class="uk-comment-primary uk-visible-toggle" tabindex="-1">
+                <header class="uk-comment-header uk-position-relative">
+                    <div class="uk-grid-medium uk-flex-middle">
+                        <div class="uk-width-auto">
+                            <img class="uk-comment-avatar" src="" width="80" height="80" alt="">
+                        </div>
+                        <div class="uk-width-expand">
+                            <h4 class="uk-comment-title uk-margin-remove">작성자 : {{ data.user_id }}</h4>
+                            <p class="uk-comment-meta uk-margin-remove">작성 날짜 : {{ data.review_date }}</p>
+                            <p class="uk-comment-meta uk-margin-remove">점수 : {{ data.review_rate }}</p>
+                        </div>
+                    </div>
+                </header>
+                <div class="uk-comment-body">
+                    <p> {{ data.review_content }}</p>
+                </div>
+            </article>
+        </li>
+    {% endfor %}
+    </ul>
+<!-- 리뷰 출력 끝 -->
+
+<!-- 리뷰 작성 -->
+    {% if request.session.login_obj %}
+        <div class="uk-card uk-card-default uk-card-body">
+            <form method="POST">
+                {% csrf_token %}
+                <legend class="uk-legend">리뷰작성</legend>
+                <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                    <p>평점 :</p>
+                    <label><input class="uk-radio" type="radio" name="my_choice" value="1">1점</label>
+                    <label><input class="uk-radio" type="radio" name="my_choice" value="2">2점</label>
+                    <label><input class="uk-radio" type="radio" name="my_choice" value="3">3점</label>
+                    <label><input class="uk-radio" type="radio" name="my_choice" value="4">4점</label>
+                    <label><input class="uk-radio" type="radio" name="my_choice" value="5">5점</label>
+                </div>
+                <div class="uk-margin">
+                    <textarea class="uk-textarea" rows="3" placeholder="review" name="my_review"></textarea>
+                </div>
+                <button class="uk-button uk-button-primary" type="submit">저장</button>
+            </form>
+        </div>
+
+    {% endif %}
+<!-- 리뷰 작성 끝 -->
+
+<!-- TOTOP 상단으로 바로 가기 -->
+<a href="" uk-totop uk-scroll></a>
+
+</div>
+</div>
+{% endblock %}

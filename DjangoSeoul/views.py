@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
+
 # NavBar
 def home(request):
     gu = Gu.objects.all().order_by('gu_name')
@@ -14,12 +15,14 @@ def home(request):
     }
     return render(request, 'templates/index.html', context)
 
+
 def signup(request):
     # Navbar
     gu = Gu.objects.all().order_by('gu_name')
     category = Category.objects.all().order_by('category_name')
     return render(request, 'templates/signup.html', {'gu_list': gu,
                                                      'category_list': category})
+
 
 def signup_process(request):
     if request.method == 'POST':
@@ -71,6 +74,7 @@ def login_process(request):
             messages.warning(request, f'😕 아이디 또는 비밀번호를 확인해주세요!')
             print('세션 안잡힘!')
             return redirect('home')
+
 
 def logout_process(request):
     logout(request)

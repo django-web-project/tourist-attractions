@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 
 class Gu(models.Model):
     gu_name = models.CharField(max_length=100)
+    gu_locx = models.IntegerField(default=0)
+    gu_locy = models.IntegerField(default=0)
 
     def __str__(self):
         return self.gu_name
