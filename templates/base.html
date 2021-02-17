@@ -6,29 +6,38 @@
     <title></title>
     <!-- jQuery CDN -->
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
-    <!-- UIkit CSS -->
+    <!-- UIkit core CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.16/dist/css/uikit.min.css" />
-
-    <!-- UIkit JS -->
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.16/dist/js/uikit.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.16/dist/js/uikit-icons.min.js"></script>
 
     <!-- static/css -->
-    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/index.css?a">
     {% block head %}
     {% endblock head %}
-
 </head>
+
 <body>
 <header>
 <!-- navbar -->
-<div class="uk-section">
+<div class="uk-section" style="background-color: #ffddd2">
     <div class="uk-position-top uk-padding">
         <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
             <nav class="uk-navbar-container" uk-navbar>
+                <div class="uk-navbar-center">
+                    <div class="uk-section-xsmall" >
+                        <div class="uk-container content_base">
+                            <form class="uk-search uk-search-navbar" action="." method="post">
+                                {% csrf_token %}
+                                    <span uk-search-icon></span>
+                                    <input class="uk-search-input" type="text" name="search_kw" placeholder=" {{ search_keyword }}">
+                            </form>
+                        </div>
+                    </div>
+                </div>
                 <div class="uk-navbar-left">
                     <ul class="uk-navbar-nav">
-                        <li class="uk-active"><a href="{% url 'home' %}">🎈 서울나들이</a></li>
+                        <li class="uk-active uk-text-bold"><a href="{% url 'home' %}">🎈 서울나들이</a></li>
                     </ul>
                 </div>
                 <div class="uk-navbar-right">
@@ -38,7 +47,11 @@
                             <div class="uk-navbar-dropdown">
                                 <ul class="uk-nav uk-navbar-dropdown-nav">
                                     {% for gu in gu_list %}
-                                        <li><a href="#">{{ gu.gu_name }}</a></li>
+                                        <li>
+                                            <a href="{% url 'tour:search' %}?gu_kw={{ gu.id }}">
+                                            {{ gu.gu_name }}
+                                            </a>
+                                        </li>
                                     {% endfor %}
                                 </ul>
                             </div>
@@ -48,7 +61,11 @@
                             <div class="uk-navbar-dropdown">
                                 <ul class="uk-nav uk-navbar-dropdown-nav">
                                     {% for category in category_list %}
-                                        <li><a href="#">{{ category.category_name }}</a></li>
+                                        <li>
+                                            <a href="{% url 'tour:search' %}?ctg_kw={{ category.id }}">
+                                            {{ category.category_name }}
+                                            </a>
+                                        </li>
                                     {% endfor %}
                                 </ul>
                             </div>
@@ -85,8 +102,6 @@
                                     <div class="uk-modal-body">
 
                                         <!-- messages -->
-
-
 
                                         <div class="uk-text-center form_container">
                                             <form method="POST" action="/loginProcess/">
@@ -142,6 +157,7 @@
                 </div>
             </nav>
         </div>
+
         <!-- messages -->
         {% if messages %}
             {% for message in messages %}
@@ -156,7 +172,7 @@
 <!-- Navbar End -->
 </header>
 
-<main>
+<main style="background-color: #ffddd2">
 {% block container %}
     <!-- 이 부분만 내용을 바꾸면 됨 -->
 {% endblock %}

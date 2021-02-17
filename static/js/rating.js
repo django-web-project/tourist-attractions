@@ -23,7 +23,7 @@ function saveReview(r_id) {
 
     let new_text = $('#review-text-'+r_id).val();
     $.ajax({
-        url : 'http://localhost:8000/account/myReviewEdit',
+        url : '/account/myReviewEdit',
         type : 'get',
         data : {
             review_id : r_id,
@@ -69,7 +69,7 @@ function saveRating(r_id) {
     editRating(r_id);
     let new_score = $('#select-rating-'+r_id+' > option:selected').attr('value')
     $.ajax({
-        url : 'http://localhost:8000/account/myRatingEdit',
+        url : '/account/myRatingEdit',
         type : 'get',
         data : {
             rating_id : r_id,
@@ -100,7 +100,7 @@ function deleteCard(r_id) {
         $(deleteBtn).closest('.card-article').remove();
 
         $.ajax({
-            url: "http://localhost:8000/account/myListDelete/",
+            url: "/account/myListDelete/",
             type: "get",
             data: {
                 r_id: r_id
@@ -135,7 +135,7 @@ function deleteAll(r_id) {
         })
 
         $.ajax({
-            url: "http://localhost:8000/account/deleteAll",
+            url: "/account/deleteAll",
             type: "get",
             data: {
                 card_list: json_str
@@ -178,7 +178,7 @@ function changeToCheckbox() {
 function filterCard(u_id) {
     let selectedFilter = $('#filter-review-' + u_id + '> option:selected').attr('value')
     $.ajax({
-        url : 'http://localhost:8000/account/myListFilter',
+        url : '/account/myListFilter',
         type : 'get',
         data : {
             user_id : u_id,

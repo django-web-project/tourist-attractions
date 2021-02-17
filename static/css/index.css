@@ -45,3 +45,8 @@
     box-shadow: none !important;
     outline: 0px !important;
 }
+
+.content_base {
+    border: 2px solid lightgray;
+  border-radius: 0.5rem;
+}

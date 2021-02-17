@@ -147,6 +147,7 @@ def my_list_delete(request):
 
     return redirect('account:profile')
 
+
 def delete_all(request):
     json_str = request.GET['card_list']
     obj = json.loads(json_str)
