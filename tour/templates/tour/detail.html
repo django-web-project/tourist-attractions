@@ -1,207 +1,181 @@
 {% extends 'base.html' %}
 
 {% block container %}
-    <div class="uk-section-xsmall">
-        <div class="uk-container">
-            <!-- 관광지 상세 설명 -->
-            <article class="uk-comment uk-comment-primary">
-                <header class="uk-comment-header">
-                    <button class="uk-button uk-button-default uk-align-right">날씨 확인</button>
-                    <!-- dropdown 안에 만들어둔 표 집어 넣기 -->
-                    <div uk-dropdown>
-                        <div class="uk-card uk-card-default uk-card-body">
-                            <table class="uk-table uk-table-divider">
-                                <caption class="uk-text-bold">{{ toursite_data.toursite_name }} 주변 날씨 예보</caption>
-                                <thead>
+<div class="uk-section-xsmall">
+<div class="uk-container">
+<!-- 관광지 상세 설명 -->
+    <article class="uk-comment uk-comment-primary">
+        <header class="uk-comment-header">
+            <button class="uk-button uk-button-default uk-align-right">날씨 확인</button>
+            <!-- dropdown 안에 만들어둔 표 집어 넣기 -->
+            <div uk-dropdown>
+                <div class="uk-card uk-card-default uk-card-body">
+                <table class="uk-table uk-table-divider">
+                    <caption class="uk-text-bold">{{ toursite_data.toursite_name }} 주변 날씨 예보</caption>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {% for time in weather_data.time %}
+                                <th class="uk-text-center">{{ time }}시</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 항목별 데이터 출력 -->
+                        {% for key, val in weather_data.items %}
+                            {% if key != 'time' %}
                                 <tr>
-                                    <th></th>
-                                    {% for time in weather_data.time %}
-                                        <th class="uk-text-center">{{ time }}시</th>
+                                    <td class="uk-text-center">{{ key }}</td>
+                                    {% for list in val %}
+                                        {% if key == '하늘상태' %}
+                                            <!-- 이미지 출력용 코드 -->
+                                            <td class="uk-text-center">
+                                                <img data-src="/static/img/weather_img/{{ list }}" width="50" height="50" uk-img>
+                                            </td>
+                                        {% elif key == '강수형태' %}
+                                            <td class="uk-text-center">
+                                                <img data-src="/static/img/weather_img/{{ list }}" width="50" height="50" uk-img>
+                                            </td>
+                                        {% else %}
+                                            <td class="uk-text-center">{{ list }}</td>
+                                        {% endif %}
                                     {% endfor %}
                                 </tr>
-                                </thead>
-                                <tbody>
-                                <!-- 항목별 데이터 출력 -->
-                                {% for key, val in weather_data.items %}
-                                    {% if key != 'time' %}
-                                        <tr>
-                                            <td class="uk-text-center">{{ key }}</td>
-                                            {% for list in val %}
-                                                {% if key == '하늘상태' %}
-                                                    <!-- 이미지 출력용 코드 -->
-                                                    <td class="uk-text-center">
-                                                        <img data-src="/static/img/weather_img/{{ list }}" width="50" height="50" uk-img>
-                                                    </td>
-                                                {% elif key == '강수형태' %}
-                                                    <td class="uk-text-center">
-                                                        <img data-src="/static/img/weather_img/{{ list }}" width="50" height="50" uk-img>
-                                                    </td>
-                                                {% else %}
-                                                    <td class="uk-text-center">{{ list }}</td>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <!-- 날씨 출력 2 끝-->
-                    <div class="uk-grid-medium uk-flex-middle">
-                        <div class="uk-width-auto">
-                            <img class="uk-comment-avatar" src="{{ toursite_data.toursite_img }}" width="80" height="80" alt="">
-                        </div>
-                        <div class="uk-width-expand">
-                            <h4 class="uk-comment-title uk-margin-remove">{{ toursite_data.toursite_name }}</h4>
-                            <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
-                                <li>{{ toursite_data.toursite_address }}</li>
-                            </ul>
-                        </div>
-                    </div>
-                </header>
-                <div class="uk-comment-body">
-                    <p>{{ toursite_data.toursite_detail }}</p>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
                 </div>
-            </article>
-            <br>
-            <!-- 관광지 상세설명 끝 -->
-
-            <!-- 카카오 지도 API -->
-            <div class="uk-container" id="map" style="width:1200px;height:500px;"></div>
-            <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=49bc75ca54c977b9bf81a7d7d4e4dbd9&libraries=services"></script>
-            <script>
-                var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
-                console.log({{ x }})
-                var options = { //지도를 생성할 때 필요한 기본 옵션
-                    // 카카오 API가 이상해서 위도, 경도 바뀜
-                    center: new kakao.maps.LatLng({{ y }}, {{ x }}), //지도의 중심좌표.
-                    level: 3 //지도의 레벨(확대, 축소 정도)
-                };
-
-                var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
-            </script><br>
-            <!-- 카카오 지도 API 끝-->
-
-            <!-- 날씨 출력을 위로 이동함-->
-
-            <!-- 리뷰출력 -->
-            <!-- 이전 버전 리뷰 출력 코드
-    {% for review in review_data %}
-        <div class="uk-card uk-card-default uk-card-body">
-            <article class="uk-comment-primary uk-visible-toggle" name="my_review" tabindex="0">
-                <header class="uk-comment-header uk-position-relative">
-                    <div class="uk-grid-medium uk-flex-middle">
-                        <div class="uk-width-auto">
-                            <img class="uk-comment-avatar uk-align-right" src="/media/{{ review.profile.image }}" width="80" height="80" alt="">
-                        </div>
-                        <div class="uk-width-expand">
-                            <h4 class="uk-comment-title uk-margin-remove" name="review_owner">작성자 : {{ review.username }}</h4>
-                            <p class="uk-comment-meta uk-margin-remove">작성 날짜 : {{ review.review_date }}</p>
-                            <p class="uk-comment-meta uk-margin-remove">점수 : {{ review.review_rate }}</p>
-                        </div>
-                    </div>
-                </header>
-                <div class="uk-comment-body">
-                    <p> {{ review.review_content }}</p>
-                </div>
-            </article>
-        </div><br>
-    {% endfor %}
--->
-            <!-- 리뷰 출력 끝 -->
-
-            <!-- 리뷰 정렬 테스트 -->
-            <div class="uk-card uk-card-default uk-card-body" uk-filter="target: .js-filter">
-                <div class="uk-grid-small uk-grid-divider uk-child-width-auto" uk-grid>
-                    <div>
-                        <ul class="uk-subnav uk-subnav-pill" uk-margin>
-                            <li class="uk-active" uk-filter-control="sort: data-date; group: data-date"><a href="#">Date Ascending</a></li>
-                            <li uk-filter-control="sort: data-date; order: desc; group: data-date"><a href="#">Date Descending</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <ul class="uk-subnav uk-subnav-pill" uk-margin>
-                            <li class="uk-active" uk-filter-control="sort: data-rate; group: data-rate"><a href="#">Rate Ascending</a></li>
-                            <li uk-filter-control="sort: data-rate; order: desc; group: data-rate"><a href="#">Rate Descending</a></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <ul class="js-filter uk-child-width-1-2 uk-child-width-1-2@m uk-text-center uk-grid-row-large" uk-grid>
-                    {% for review in review_data %}
-                        <li class="uk-width-1-2@m" data-date="{{ review.review_date }}" data-rate="{{ review.review_rate }}">
-                            <div class="uk-card uk-card-default uk-card-body " >
-                                <article class="uk-comment-primary uk-visible-toggle" tabindex="0">
-                                    <header class="uk-comment-header uk-position-relative">
-                                        <div class="uk-grid-medium uk-flex-middle">
-                                            <div class="uk-width-auto">
-                                                <img class="uk-comment-avatar uk-align-right" src="/media/{{ review.profile.image }}" width="80" height="80" alt="">
-                                            </div>
-                                            <div class="uk-width-expand">
-                                                <h4 class="uk-comment-title uk-margin-remove uk-align-left">작성자 : {{ review.username }}</h4><br><br>
-                                                <p class="uk-comment-meta uk-margin-remove uk-align-left">작성 날짜 : {{ review.review_date }}</p><br>
-                                                <p class="uk-comment-meta uk-margin-remove uk-align-left">점수 : {{ review.review_rate }}</p>
-                                            </div>
-                                        </div>
-                                    </header>
-                                    <div class="uk-comment-body">
-                                        <p class="uk-align-left"> {{ review.review_content }}</p>
-                                    </div>
-                                </article>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
-
             </div>
-            <!-- 리뷰정렬 테스트 끝 -->
-
-            <!-- 리뷰 작성 -->
-            <!-- 리뷰 작성한 유저면 리뷰 수정하기로 넘어가기 -->
-            {% if review_check == 1 %}
-                <div class="uk-card uk-card-default uk-card-body">
-                    <p>이미 작성한 리뷰가 있습니다</p>
-                    <p>작성하신 리뷰를 수정하러 가시겠습니까?</p>
-                    <button class="uk-button uk-button-primary">수정하기</button>
+            <!-- 날씨 출력 2 끝-->
+            <div class="uk-grid-medium uk-flex-middle">
+                <div class="uk-width-auto">
+                    <img class="uk-comment-avatar" src="{{ toursite_data.toursite_img }}" width="80" height="80" alt="">
                 </div>
-            {% elif user.is_authenticated %}
-                <div class="uk-card uk-card-default uk-card-body">
-                    <form name="reviewForm" method="POST">
-                        {% csrf_token %}
-                        <legend class="uk-legend">리뷰작성</legend>
-                        <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-                            <p>평점 :</p>
-                            <label><input class="uk-radio" type="radio" name="my_choice" value="1">1점</label>
-                            <label><input class="uk-radio" type="radio" name="my_choice" value="2">2점</label>
-                            <label><input class="uk-radio" type="radio" name="my_choice" value="3">3점</label>
-                            <label><input class="uk-radio" type="radio" name="my_choice" value="4">4점</label>
-                            <label><input class="uk-radio" type="radio" name="my_choice" value="5">5점</label>
-                        </div>
-                        <script language="javascript">
-                            function len_chk(){
-                                let frm = document.reviewForm.my_review;
-                                if(frm.value.length > 100){
-                                    alert("글자수는 100자로 제한됩니다.");
-                                    frm.value = frm.value.substring(0,100);
-                                    frm.focus();
-                                }
-                            }
-                        </script>
-                        <div class="uk-margin">
-                    <textarea class="uk-textarea" rows="3" placeholder="100자 제한" name="my_review"
-                              onkeyup="len_chk()"></textarea>
-                        </div>
-                        <button class="uk-button uk-button-primary" type="submit">저장</button>
-                    </form>
+                <div class="uk-width-expand">
+                    <h4 class="uk-comment-title uk-margin-remove">{{ toursite_data.toursite_name }}</h4>
+                    <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
+                        <li>{{ toursite_data.toursite_address }}</li>
+                    </ul>
                 </div>
-            {% endif %}
-            <!-- 리뷰 작성 끝 -->
+            </div>
+        </header>
+        <div class="uk-comment-body">
+            <p>{{ toursite_data.toursite_detail }}</p>
+        </div>
+    </article>
+    <br>
+<!-- 관광지 상세설명 끝 -->
 
-            <!-- TOTOP 상단으로 바로 가기 -->
-            <br><br>
-            <a href="" uk-totop uk-scroll></a>
+<!-- 카카오 지도 API -->
+    <div class="uk-container" id="map" style="width:1200px;height:400px;"></div>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=49bc75ca54c977b9bf81a7d7d4e4dbd9&libraries=services"></script>
+    <script>
+        var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+        console.log({{ x }})
+        var options = { //지도를 생성할 때 필요한 기본 옵션
+            // 카카오 API가 이상해서 위도, 경도 바뀜
+            center: new kakao.maps.LatLng({{ y }}, {{ x }}), //지도의 중심좌표.
+            level: 3 //지도의 레벨(확대, 축소 정도)
+        };
 
+        var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+    </script><br>
+<!-- 카카오 지도 API 끝-->
+
+<!-- 날씨 출력을 위로 이동함-->
+
+<!-- 리뷰 정렬 테스트 -->
+<div class="uk-card uk-card-default uk-card-body" uk-filter="target: .js-filter">
+    <div class="uk-grid-small uk-grid-divider uk-child-width-auto" uk-grid>
+        <div>
+            <ul class="uk-subnav uk-subnav-pill" uk-margin>
+                <li class="uk-active" uk-filter-control="sort: data-date; group: data-date"><a href="#">Date Ascending</a></li>
+                <li uk-filter-control="sort: data-date; order: desc; group: data-date"><a href="#">Date Descending</a></li>
+            </ul>
+        </div>
+        <div>
+            <ul class="uk-subnav uk-subnav-pill" uk-margin>
+                <li class="uk-active" uk-filter-control="sort: data-rate; group: rate"><a href="#">Rate Ascending</a></li>
+                <li uk-filter-control="sort: data-rate; order: desc; group: rate"><a href="#">Rate Descending</a></li>
+            </ul>
         </div>
     </div>
+
+    <ul class="js-filter uk-child-width-1-2 uk-child-width-1-2@m uk-text-center uk-grid-row-large" uk-grid>
+        {% for review in review_data %}
+            <li class="uk-width-1-2@m" data-date="{{ review.review_date }}" data-rate="{{ review.review_rate }}">
+                <div class="uk-card uk-card-default uk-card-body " >
+                    <article class="uk-comment-primary uk-visible-toggle" tabindex="0">
+                        <header class="uk-comment-header uk-position-relative">
+                            <div class="uk-grid-medium uk-flex-middle">
+                                <div class="uk-width-auto">
+                                    <img class="uk-comment-avatar uk-align-right" src="/static/img/profile_pics/{{ review.profile.image }}" width="80" height="80" alt="">
+                                </div>
+                                <div class="uk-width-expand">
+                                    <h4 class="uk-comment-title uk-margin-remove uk-align-left">작성자 : {{ review.username }}</h4><br><br>
+                                    <p class="uk-comment-meta uk-margin-remove uk-align-left">작성 날짜 : {{ review.review_date }}</p><br>
+                                    <p class="uk-comment-meta uk-margin-remove uk-align-left">점수 : {{ review.review_rate }}</p>
+                                </div>
+                            </div>
+                        </header>
+                        <div class="uk-comment-body">
+                            <p class="uk-align-left"> {{ review.review_content }}</p>
+                        </div>
+                    </article>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+</div>
+<!-- 리뷰정렬 테스트 끝 -->
+
+<!-- 리뷰 작성 -->
+    <!-- 리뷰 작성한 유저면 리뷰 수정하기로 넘어가기 -->
+    {% if review_check == 1 %}
+        <div class="uk-card uk-card-default uk-card-body">
+            <p>이미 작성한 리뷰가 있습니다</p>
+            <p>작성하신 리뷰를 수정하러 가시겠습니까?</p>
+            <button class="uk-button uk-button-primary">수정하기</button>
+        </div>
+    {% elif user.is_authenticated %}
+        <div class="uk-card uk-card-default uk-card-body">
+            <form name="reviewForm" method="POST">
+                {% csrf_token %}
+                <legend class="uk-legend">리뷰작성</legend>
+                <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                    <p>평점 :</p>
+                    <label><input class="uk-radio" type="radio" name="my_choice" value="1">1점</label>
+                    <label><input class="uk-radio" type="radio" name="my_choice" value="2">2점</label>
+                    <label><input class="uk-radio" type="radio" name="my_choice" value="3">3점</label>
+                    <label><input class="uk-radio" type="radio" name="my_choice" value="4">4점</label>
+                    <label><input class="uk-radio" type="radio" name="my_choice" value="5">5점</label>
+                </div>
+                <script language="javascript">
+                    function len_chk(){
+                        let frm = document.reviewForm.my_review;
+                        if(frm.value.length > 100){
+                            alert("글자수는 100자로 제한됩니다.");
+                            frm.value = frm.value.substring(0,100);
+                            frm.focus();
+                        }
+                    }
+                </script>
+                <div class="uk-margin">
+                    <textarea class="uk-textarea" rows="3" placeholder="100자 제한" name="my_review"
+                    onkeyup="len_chk()"></textarea>
+                </div>
+                <button class="uk-button uk-button-primary" type="submit">저장</button>
+            </form>
+        </div>
+    {% endif %}
+<!-- 리뷰 작성 끝 -->
+
+<!-- TOTOP 상단으로 바로 가기 -->
+<br><br>
+<a href="" uk-totop uk-scroll></a>
+
+</div>
+</div>
 {% endblock %}

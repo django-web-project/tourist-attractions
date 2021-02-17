@@ -33,20 +33,24 @@
                         <div class="uk-navbar-dropdown">
                             <ul class="uk-nav uk-navbar-dropdown-nav">
                                 {% for gu in gu_list %}
-                                    <li><a href="#">{{ gu.gu_name }}</a></li>
+                                    <li><a href="{% url 'tour:search' %}?gu_kw={{ gu.id }}">
+                                    {{ gu.gu_name }}</a>
+                                    </li>
                                 {% endfor %}
                             </ul>
                         </div>
                     </li>
                     <li>
                         <a href="#">테마</a>
-                        <div class="uk-navbar-dropdown">
-                            <ul class="uk-nav uk-navbar-dropdown-nav">
-                                {% for category in category_list %}
-                                    <li><a href="#">{{ category.category_name }}</a></li>
-                                {% endfor %}
-                            </ul>
-                        </div>
+                            <div class="uk-navbar-dropdown">
+                                <ul class="uk-nav uk-navbar-dropdown-nav">
+                                    {% for category in category_list %}
+                                        <li><a href="{% url 'tour:search' %}?ctg_kw={{ category.id }}">
+                                        {{ category.category_name }}
+                                        </a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                     </li>
 
                     <!-- 로그인 or 로그아웃? -->
@@ -152,10 +156,10 @@
 
 <main>
 <div class="search">
-    <form class="uk-search uk-search-large">
+    <form class="uk-search uk-search-large" action="{% url 'tour:search' %}" method="get">
         <div class="content">
             <span uk-search-icon></span>
-            <input class="uk-search-input" type="search" placeholder="Please Enter :)">
+            <input class="uk-search-input" type="search"  placeholder="Please Enter :)" name="search_kw" value={{ search_kw }}>
         </div>
     </form>
 </div>

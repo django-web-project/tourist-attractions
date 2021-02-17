@@ -6,6 +6,9 @@ from django.urls import reverse
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.db.models import Q
+from django.core.paginator import Paginator
+import json
 
 
 # 버전 5 : 날씨 데이터 가져오기 함수화
@@ -108,8 +111,24 @@ def get_weather_data(x, y):
                     category_data[3][1]: get_t1h(result, category_data),
                     category_data[4][1]: get_reh(result, category_data),
                     category_data[5][1]: get_wsd(result, category_data)}
-
     return weather_data
+
+
+def get_xy(toursite):
+    # 거리의 경우 주소에 있는 json을 통해 좌표 가져오기
+    if toursite.category_id == 5:
+        address_data = json.loads(toursite.toursite_address)
+        location_x = address_data['x']
+        location_y = address_data['y']
+    # 다른 관광지의 경우 카카오 API를 통해 좌표 가져오기
+    else:
+        url = 'http://dapi.kakao.com/v2/local/search/address'
+        params = {'query': toursite.toursite_address}
+        header = {'Authorization': 'KakaoAK c1c91e71e21bbee8cdc83ab7f30cbc51'}
+        result = requests.get(url, headers=header, params=params).json()
+        location_x = result['documents'][0]['address']['x']
+        location_y = result['documents'][0]['address']['y']
+    return location_x, location_y
 
 
 def detail(request, toursite_id):
@@ -141,17 +160,13 @@ def detail(request, toursite_id):
         # 현재 로그인한 유저가 리뷰를 썼는지 확인
         review_check = 0
         if Review.objects.select_related('toursite').filter(toursite_id=toursite_id).filter(user_id=request.user.id):
+            # 리뷰를 썼다면 1로 변경
             review_check = 1
         else:
             pass
 
         # 검색된 주소의 X, Y 좌표
-        url = 'http://dapi.kakao.com/v2/local/search/address'
-        params = {'query': selected_toursite.toursite_address}
-        header = {'Authorization': 'KakaoAK c1c91e71e21bbee8cdc83ab7f30cbc51'}
-        result = requests.get(url, headers=header, params=params).json()
-        location_x = result['documents'][0]['address']['x']
-        location_y = result['documents'][0]['address']['y']
+        location_x, location_y = get_xy(selected_toursite)
 
         # 관광지가 속한 구 찾기
         selected_gu = Gu.objects.get(id=selected_toursite.gu_id)
@@ -164,9 +179,65 @@ def detail(request, toursite_id):
         gu_list = Gu.objects.all()
         category_list = Category.objects.all()
 
+        # 거리의 경우 주소가 json 형태로 되어있어 여기서 상세주소만 가져오는 작업이 필요
+        if selected_toursite.category_id == 5:
+            address_data = json.loads(selected_toursite.toursite_address)['상세주소']
+            selected_toursite.toursite_address = address_data
+
         # 관광지 관련 데이터, 리뷰관련 데이터, 관광지 좌표, 검색 시간 기준 시간 예보 데이터
         context = {'toursite_data': selected_toursite, 'review_data': review_data,
                    'x': location_x, 'y': location_y, 'weather_data': weather_data,
                    'gu_list': gu_list, 'category_list': category_list,
                    'review_check': review_check}
         return render(request, 'tour/detail.html', context)
+
+
+def search(request):
+    # Nav Bar 구, 카테고리 드롭다운 가져오기
+    gu = Gu.objects.all().order_by('gu_name')
+    category = Category.objects.all().order_by('category_name')
+    # search/ 에서 검색기능
+    if request.method == 'POST':
+        searchWord = request.POST['search_kw']
+        toursite_list = Toursite.objects.filter(
+            Q(toursite_name__icontains=searchWord) | Q(toursite_detail__icontains=searchWord)).distinct()\
+            .select_related('gu').select_related('category').order_by('toursite_name')
+    # Nav Bar 구 단위 검색
+    elif request.GET.get('gu_kw'):
+        gu_id1 = request.GET.get('gu_kw')
+        searchWord = Gu.objects.get(id=gu_id1)
+        toursite_list = Toursite.objects.filter(gu_id=gu_id1).distinct()\
+            .select_related('gu').select_related('category').order_by('toursite_name')
+    # Nav Bar 카테고리 단위 검색
+    elif request.GET.get('ctg_kw'):
+        ctg_id = request.GET.get('ctg_kw')
+        searchWord = Category.objects.get(id=ctg_id)
+        toursite_list = Toursite.objects.filter(category_id=ctg_id).distinct()\
+            .select_related('gu').select_related('category').order_by('toursite_name')
+    # 메인페이지에서 검색
+    else:
+        searchWord = request.GET.get('search_kw')
+        toursite_list = Toursite.objects.filter(
+            Q(toursite_name__icontains=searchWord) | Q(toursite_detail__icontains=searchWord)).distinct()\
+            .select_related('gu').select_related('category').order_by('toursite_name')
+    # 상세 설명 글자 자르기
+    for selected_toursite in toursite_list:
+        if len(selected_toursite.toursite_detail) > 100:
+            raw_data_toursite_detail = selected_toursite.toursite_detail[0:100] + ' ... (중략)'
+            selected_toursite.toursite_detail = raw_data_toursite_detail
+    # 거리 관광지의 주소 변경
+    for selected_toursite in toursite_list:
+        if selected_toursite.category_id == 5:
+            address_data = json.loads(selected_toursite.toursite_address)['상세주소']
+            selected_toursite.toursite_address = address_data
+
+    paginator = Paginator(toursite_list, 10)
+    page_list = paginator.page_range
+    page = request.GET.get('page', 1)
+    toursite_page = paginator.get_page(page)
+    context = {'search_keyword': searchWord,
+               'toursite_page': toursite_page,
+               'page_list': page_list,
+               'gu_list': gu,
+               'category_list': category}
+    return render(request, 'tour/search.html', context)
