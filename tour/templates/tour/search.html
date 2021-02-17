@@ -49,9 +49,7 @@
             {% for Toursite in toursite_page %}
                 <ul class="uk-width-expand uk-padding-remove" data-gu="{{ Toursite.gu.gu_name }}" data-category="{{ Toursite.category.category_name }}">
                     <div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
-                        <div uk-height-viewport="expand: true"
-                             class="uk-card uk-card-body uk-padding"
-                             style="text-align: center">
+                        <div class="uk-card uk-card-body uk-padding" style="text-align: center">
                                 <img src="{{ Toursite.toursite_img }}" alt="{{ Toursite.toursite_name }} img"
                                      title="{{ Toursite.toursite_name }} img" width="270px" height="270px">
                         </div>
@@ -78,39 +76,19 @@
                     </div>
                 </ul>
             {% endfor %}
-        {% elif search_term %}<!-- 검색란이 공란인지 확인-->
-            <div class="uk-card uk-card-default uk-card-body">
-                <b><i>해당 관광지({{ search_term }})를 찾을 수 없습니다.</i></b>
+        {% else %}<!-- 검색란이 공란인지 확인-->
+            <div class="uk-width-expand uk-padding-remove">
+                <div class="uk-card uk-card-default uk-card-body">
+                    <b><i>해당 관광지({{ search_keyword }})를 찾을 수 없습니다.</i></b>
+                </div>
             </div>
         {% endif %}
     </ul>
     <!--  목록 생성 끝 -->
     </div>
     </div>
-</div>
-<!----페이지네이션 시작 (수정하고 지울 부분) ------>
-<div class="container">
-    {# first previous #}
-    {% if toursite_page.has_previous %}
-        <a href="?page=1&search_kw={{ search_keyword }}"
-           uk-icon="icon: chevron-double-left"></a>
-        <a href="?page={{ toursite_page.previous_page_number }}&search_kw={{ search_keyword }}"
-           uk-icon="icon: chevron-left"></a>
-    {% endif %}
-    {# of #}
-        <span>{{ toursite_page.number }}</span>
-        <span>of</span>
-        <span>{{ toursite_page.paginator.num_pages }}</span>
-    {# Next last #}
-    {% if toursite_page.has_next %}
-        <a href="?page={{ toursite_page.next_page_number }}&search_kw={{ search_keyword }}"
-           uk-icon="icon: chevron-right"></a>
-        <a href="?page={{ toursite_page.paginator.num_pages }}&search_kw={{ search_keyword }}"
-           uk-icon="icon: chevron-double-right"></a>
-    {% endif %}
-    </div>
-<!----페이지네이션 끝 ------>
 <!-- uikit Pagination -->
+{% if toursite_page %}
 <ul class="uk-pagination uk-flex-center" uk-margin>
     {% for page in page_list %}
         {% if page == toursite_page.number %}
@@ -120,5 +98,8 @@
         {% endif %}
     {% endfor %}
 </ul>
+{% endif %}
+<!-- uikit Pagination -->
+</div>
 
 {% endblock %}
