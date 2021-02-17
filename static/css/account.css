@@ -1,34 +1,48 @@
-body{
+body, html{
     background: #ffddd2;
 }
-/*.column_container{*/
-/*    width: 940px;*/
-/*    margin: 0px auto;*/
-/*    padding: 20px;*/
-/*    border: 1px solid #bcbcbc;*/
-/*}*/
 
-/*header {*/
-/*    padding: 20px;*/
-/*    margin-bottom: 20px;*/
-/*    border: 1px solid #bcbcbc;*/
-/*}*/
-/*.main_container {*/
-/*    margin-top: auto;*/
-/*    margin-bottom: auto;*/
-/*    position: relative;*/
-/*    flex-direction: column;*/
-/*    display: flex;*/
-/*    justify-content: center;*/
-/*    align-items: center;*/
-/*    min-height: 10vh;*/
-/*    padding: 3rem;*/
-/*}*/
-/*.sidebar_left {*/
-/*    width: 260px;*/
-/*    padding: 20px;*/
-/*    margin-bottom: 20px;*/
-/*    float: left;*/
-/*    border: 1px solid #bcbcbc;*/
-/*}*/
+.drop-zone{
+    max-width: 1200px;
+    height: 100px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: gray;
+    border: 1px dashed lightgray;
+    border-radius: 3px;
+    cursor: pointer;
+}
 
+.drop-zone--over{
+    box-shadow: 0 0 20px rgb(100 100 100 / 30%);
+}
+
+.drop-zone__input{
+    display: none;
+}
+
+.drop-zone__thumb{
+    width: 120px;
+    height: 120px;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #cccccc;
+    background-size: cover;
+    position: relative;
+}
+
+.drop-zone__thumb::after {
+    content: attr(data-label);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 5px 0;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.45);
+    font-size: 14px;
+    text-align: center;
+}

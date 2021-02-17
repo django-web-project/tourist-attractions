@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import User
 
 
@@ -33,7 +34,11 @@ class Toursite(models.Model):
 
 
 class Review(models.Model):
-    review_rate = models.IntegerField(default=0)
+    review_rate = models.IntegerField(default=0,
+                                      validators=[
+                                          MaxValueValidator(5),
+                                          MinValueValidator(1)
+                                      ])
     review_date = models.DateTimeField(default=timezone.now)
     review_content = models.CharField(max_length=100)
 

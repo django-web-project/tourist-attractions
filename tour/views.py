@@ -1,17 +1,20 @@
 import requests
 from django.shortcuts import render, get_object_or_404
-from tour.models import Toursite, Review, Gu
+from tour.models import Toursite, Review, Gu, Category
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 # 버전 5 : 날씨 데이터 가져오기 함수화
 # 1. 강수형태
+# 기존 코드 pty_list = [['없음', '0'], ['비', '1'], ['비/눈', '2'], ['눈', '3'], ['소나기', '4'],
+#                       ['빗방울', '5'], ['빗방울/눈날림', '6'], ['눈날림', '7']]
 def get_pty(result, category_data):
-    pty_list = [['없음', '0'], ['비', '1'], ['비/눈', '2'], ['눈', '3'], ['소나기', '4'],
-                ['빗방울', '5'], ['빗방울/눈날림', '6'], ['눈날림', '7']]
+    pty_list = [['NB01.png', '0'], ['NB08.png', '1'], ['NB23.png', '2'], ['NB11.png', '3'], ['NB08.png', '4'],
+                ['NB08.png', '5'], ['NB23.png', '6'], ['NB11.png', '7']]
     tmp_list = []
     for a in result['response']['body']['items']['item']:
         if a['category'] == category_data[0][0]:
@@ -32,7 +35,8 @@ def get_rn1(result, category_data):
 
 # 3. 하늘 상태
 def get_sky(result, category_data):
-    sky_list = [['맑음', '1'], ['구름많음', '3'], ['흐림', '4']]
+    # 날씨 글자(맑은, 구름많음, 흐림)에서 이미지로 변경
+    sky_list = [['NB01.png', '1'], ['NB03.png', '3'], ['NB04.png', '4']]
     tmp_list = []
     for a in result['response']['body']['items']['item']:
         if a['category'] == category_data[2][0]:
@@ -77,7 +81,8 @@ def get_weather_data(x, y):
     # 초단기예보 API
     serviceKey = 'serviceKey=HQQ343Up2NzYotrJyDgsjFbGMy4IFDnciZFl42QvcXOyLzMQDpLmB1jKw4bBODX%2FK2vX1NHlp%2BVwVI0Pae9AWQ%3D%3D'
     dataType = '&dataType=JSON'
-    base_date = '&base_date=' + dt1.date().strftime('%Y%m%d')
+    # 시간에선 1시간 빼주는 데 날짜에선 1시간 안빼서 12:00 근처에서 에러 발생
+    base_date = '&base_date=' + (dt1 - timedelta(hours=1)).date().strftime('%Y%m%d')
     base_time = '&base_time=' + (dt1 - timedelta(hours=1)).time().strftime('%H') + '30'
     nx = '&nx=' + str(x)
     ny = '&ny=' + str(y)
@@ -108,14 +113,14 @@ def get_weather_data(x, y):
 
 
 def detail(request, toursite_id):
+    # 리뷰를 작성한 경우
     if request.method == 'POST':
-        print('평점 : ' + request.POST['my_choice'])
-        print('리뷰 : ' + request.POST['my_review'])
-        # new_review = Review(review_rate='request.POST['my_choice']', review_date='?',
-        #                     review_content='request.POST['my_review']'
-        # (FK는 어떻게 씀?)   ?toursite_id = '', ?user_id = '')
+        # request에 유저의 정보도 담고 있다. requset.user로 접근하자
+        # 시간 관련 에러발생하여 datetime을 timezone으로 변경
+        new_review = Review(review_rate=int(request.POST['my_choice']), review_content=request.POST['my_review'],
+                            review_date=timezone.now(), toursite_id=toursite_id, user_id=request.user.id)
         # 위에서 리뷰에 담을 데이터 넣고 DB에 저장
-        # new_review.save()
+        new_review.save()
         return HttpResponseRedirect(reverse('tour:detail', args=(toursite_id,)))
 
     else:
@@ -123,17 +128,22 @@ def detail(request, toursite_id):
         selected_toursite = get_object_or_404(Toursite, pk=toursite_id)
 
         # 검색된 관광지관련 리뷰 모음
-        review_list = Review.objects.all().filter(toursite_id=toursite_id)
+        # 총 3개의 테이블에 걸쳐 데이터가 나눠져있어 ORM으로 3개의 테이블의 데이터를 다 가지고 오지 못함
+        # 그래서 raw()를 이용해서 mysql query를 통째로 집어넣음
+        # 이러면 바로 review_data.column 이름으로 접근가능한거 같음
+        review_data = User.objects.raw('''SELECT u.id, u.username, r.review_content, r.review_date, r.review_rate, p.image
+                                    FROM djangoseouldb.auth_user u
+                                    JOIN (djangoseouldb.account_profile p, djangoseouldb.tour_review r)
+                                    ON (u.id=p.user_id AND u.id=r.user_id)
+                                    WHERE r.toursite_id = {}
+                                    '''.format(toursite_id))
 
-        # 리뷰 작성자 데이터 모음 필요
-        user_list = []
-        for review in review_list:
-            user_list.append(User.objects.all().filter(id=review.user_id))
-
-        # 이후 리뷰와 유저데이터를 하나로 모아서 전달하면 됨
-        # review_data = [review_list, user_list]
-        # 현재 유저 테이블이 확정되지 않아 기능 구현이 잘 안됨?
-        # 내가 DB에서 넣은 데이터라 장고에서 인식을 못하나?
+        # 현재 로그인한 유저가 리뷰를 썼는지 확인
+        review_check = 0
+        if Review.objects.select_related('toursite').filter(toursite_id=toursite_id).filter(user_id=request.user.id):
+            review_check = 1
+        else:
+            pass
 
         # 검색된 주소의 X, Y 좌표
         url = 'http://dapi.kakao.com/v2/local/search/address'
@@ -147,9 +157,16 @@ def detail(request, toursite_id):
         selected_gu = Gu.objects.get(id=selected_toursite.gu_id)
 
         # 관광지가 속한 구의 좌표값을 이용해서 날씨정보 가져오기
+        # 확인된 문제 12:00에 날씨 정보를 가져오지 못하는 것 같음
         weather_data = get_weather_data(selected_gu.gu_locx, selected_gu.gu_locy)
 
+        # base.html에 필요한 구, 테마 정보
+        gu_list = Gu.objects.all()
+        category_list = Category.objects.all()
+
         # 관광지 관련 데이터, 리뷰관련 데이터, 관광지 좌표, 검색 시간 기준 시간 예보 데이터
-        context = {'toursite_data': selected_toursite, 'review_data': review_list,
-                   'x': location_x, 'y': location_y, 'weather_data': weather_data}
+        context = {'toursite_data': selected_toursite, 'review_data': review_data,
+                   'x': location_x, 'y': location_y, 'weather_data': weather_data,
+                   'gu_list': gu_list, 'category_list': category_list,
+                   'review_check': review_check}
         return render(request, 'tour/detail.html', context)

@@ -1,0 +1,50 @@
+.review-table {
+    border: 0.5px solid #E5E5E5;
+}
+
+.heart-btn {
+    background-color: inherit !important;
+    border: 0 !important;
+}
+
+.hidden {
+    display: none;
+}
+
+.heart-outer {
+    position: relative;
+    display: inline-block;
+}
+
+.hearts-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0;
+}
+
+.hearts-outer::before {
+    content: "\f004  \f004  \f004  \f004  \f004";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 2em;
+    color: #ccc;
+}
+
+.hearts-inner::before {
+    content: "\f004 \f004 \f004 \f004 \f004";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    color: #fc036f;
+}
+
+
+.text-remaining-chars {
+    color: gray;
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 5px;
+    text-align: right;
+}
