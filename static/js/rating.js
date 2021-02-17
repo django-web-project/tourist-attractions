@@ -29,7 +29,7 @@ function editReview(r_id) {
             remainingText.innerHTML = `${remaining}/100`;
             remainingText.style.color = color;
 
-            if(remaining == 0) {
+            if(remaining <= 0) {
                 alert('글자수는 100자로 제한됩니다.');
                 newText[0].value = newText[0].value.substring(0, 100);
                 newText[0].focus()
