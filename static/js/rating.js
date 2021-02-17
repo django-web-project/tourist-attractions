@@ -15,6 +15,34 @@ function editReview(r_id) {
         reviewLink.classList.remove('hidden')
         editBtn.classList.remove('hidden')
     }
+
+    // Text Counter
+    function addTextInputEventListeners() {
+        const newText= document.getElementsByClassName('new-textarea');
+        const remainingText = document.getElementsByClassName('text-remaining-chars')[0];
+        const MAX_CHARS = 100;
+
+        function test() {
+            const remaining = MAX_CHARS - newText[0].value.length;
+            const color = remaining < MAX_CHARS * 0.1 ? 'red' : null;
+
+            remainingText.innerHTML = `${remaining}/100`;
+            remainingText.style.color = color;
+
+            if(remaining == 0) {
+                alert('글자수는 100자로 제한됩니다.');
+                newText[0].value = newText[0].value.substring(0, 100);
+                newText[0].focus()
+            }
+        }
+
+        newText[0].addEventListener("input", () => {
+           test()
+        });
+        test();
+    }
+    addTextInputEventListeners();
+
     return r_id;
 }
 
@@ -23,7 +51,7 @@ function saveReview(r_id) {
 
     let new_text = $('#review-text-'+r_id).val();
     $.ajax({
-        url : '/account/myReviewEdit',
+        url : '/account/myListUpdate',
         type : 'get',
         data : {
             review_id : r_id,
@@ -31,9 +59,11 @@ function saveReview(r_id) {
         },
         dataType : 'json',
         success : function() {
+            window.location.reload();
             console.log('성공');
         },
         error : function() {
+            window.location.reload();
             console.log('실패');
         }
     })
@@ -49,18 +79,18 @@ function cancelReview(r_id) {
 function editRating(r_id) {
     let editBtn = document.getElementById(`edit-rating-btn-${r_id}`)
     let ratingWrapper = document.getElementsByClassName(`rating-form-wrapper-${r_id}`)
-    let ratingHeart = document.getElementById(`rating-point-${r_id}`)
+    let heartsWrapper = document.getElementsByClassName('hearts-wrapper')
 
     if(ratingWrapper[0].classList.contains('hidden')) {
         ratingWrapper[0].classList.remove('hidden')
         ratingWrapper[1].classList.remove('hidden')
-        ratingHeart.classList.add('hidden')
         editBtn.classList.add('hidden')
+        heartsWrapper[0].classList.add('hidden')
     } else {
         ratingWrapper[0].classList.add('hidden')
         ratingWrapper[1].classList.add('hidden')
-        ratingHeart.classList.remove('hidden')
         editBtn.classList.remove('hidden')
+        heartsWrapper[0].classList.remove('hidden')
     }
     return r_id
 }
@@ -69,7 +99,7 @@ function saveRating(r_id) {
     editRating(r_id);
     let new_score = $('#select-rating-'+r_id+' > option:selected').attr('value')
     $.ajax({
-        url : '/account/myRatingEdit',
+        url : '/account/myListUpdate',
         type : 'get',
         data : {
             rating_id : r_id,
@@ -77,9 +107,11 @@ function saveRating(r_id) {
         },
         dataType : 'json',
         success : function() {
+            window.location.reload();
             console.log('성공');
         },
         error : function() {
+            window.location.reload();
             console.log('실패');
         }
     })
@@ -100,7 +132,7 @@ function deleteCard(r_id) {
         $(deleteBtn).closest('.card-article').remove();
 
         $.ajax({
-            url: "/account/myListDelete/",
+            url: "/account/myListUpdate/",
             type: "get",
             data: {
                 r_id: r_id
@@ -135,7 +167,7 @@ function deleteAll(r_id) {
         })
 
         $.ajax({
-            url: "/account/deleteAll",
+            url: "/account/myListUpdate",
             type: "get",
             data: {
                 card_list: json_str
@@ -176,13 +208,16 @@ function changeToCheckbox() {
 
 // Filtering
 function filterCard(u_id) {
-    let selectedFilter = $('#filter-review-' + u_id + '> option:selected').attr('value')
+    //let selectedFilter = $('#filter-review-' + u_id + '> option:selected').attr('value')
+
+    //find arcticales
+    //reorder
     $.ajax({
-        url : '/account/myListFilter',
+        url : '/account/myListUpdate',
         type : 'get',
         data : {
             user_id : u_id,
-            filter_value : selectedFilter,
+            filter_value : '3',
         },
         dataType : 'json',
         success : function() {
@@ -194,7 +229,6 @@ function filterCard(u_id) {
     })
     return u_id
 }
-
 
 
 
@@ -227,19 +261,3 @@ function getRatings() {
         document.querySelector('.hearts-inner').style.width = heartPercentageRounded;
     }
 }
-
-
-
-// Text Counter
-const newText= document.getElementsByClassName('new-textarea');
-const remainingText = document.getElementsByClassName('text-remaining-chars');
-const MAX_CHARS = 100;
-
-newText.addEventListener("input", () => {
-    const remaining = MAX_CHARS - newText.value.length;
-    const color = remaining < MAX_CHARS * 0.1 ? 'red' : null;
-
-
-    remainingText.textContent = `${remaining}/100`;
-    remainingText.style.color = color;
-});

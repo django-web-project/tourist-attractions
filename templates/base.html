@@ -23,11 +23,11 @@
 <div class="uk-section" style="background-color: #ffddd2">
     <div class="uk-position-top uk-padding">
         <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
-            <nav class="uk-navbar-container" uk-navbar>
+            <nav class="uk-navbar-container my_navbar" uk-navbar>
                 <div class="uk-navbar-center">
                     <div class="uk-section-xsmall" >
                         <div class="uk-container content_base">
-                            <form class="uk-search uk-search-navbar" action="." method="post">
+                            <form class="uk-search uk-search-navbar" action="/tour/search/" method="post">
                                 {% csrf_token %}
                                     <span uk-search-icon></span>
                                     <input class="uk-search-input" type="text" name="search_kw" placeholder=" {{ search_keyword }}">
@@ -36,13 +36,20 @@
                     </div>
                 </div>
                 <div class="uk-navbar-left">
-                    <ul class="uk-navbar-nav">
+                    <ul class="uk-navbar-nav navbar_title">
                         <li class="uk-active uk-text-bold"><a href="{% url 'home' %}">🎈 서울나들이</a></li>
                     </ul>
                 </div>
                 <div class="uk-navbar-right">
-                    <ul class="uk-navbar-nav">
-                        <li>
+                    <!-- 홈페이지 크기가 작아지면 토글 버튼 생성 -->
+                    <a href="#" class="toggle-button uk-margin-top">
+                        <span class="bar-base"></span>
+                        <span class="bar-base"></span>
+                        <span class="bar-base"></span>
+
+                    </a>
+                    <ul class="uk-navbar-nav hamburger_navbar">
+                        <li class="navbar-links">
                             <a href="#">지역</a>
                             <div class="uk-navbar-dropdown">
                                 <ul class="uk-nav uk-navbar-dropdown-nav">
@@ -56,7 +63,7 @@
                                 </ul>
                             </div>
                         </li>
-                        <li>
+                        <li class="navbar-links">
                             <a href="#">테마</a>
                             <div class="uk-navbar-dropdown">
                                 <ul class="uk-nav uk-navbar-dropdown-nav">
@@ -73,7 +80,7 @@
 
                         <!-- 로그인 or 로그아웃? -->
                         {% if request.session.login_obj %}
-                            <li>
+                            <li class="navbar-links">
                                 <a href="{% url 'account:profile' %}">마이페이지</a>
                                 <div class="uk-navbar-dropdown">
                                     <ul class="uk-nav uk-navbar-dropdown-nav">
@@ -83,7 +90,7 @@
                                 </div>
                             </li>
 
-                            <li><a href="{% url 'logout_process' %}">로그아웃</a></li>
+                            <li class="navbar-links"><a href="{% url 'logout_process' %}">로그아웃</a></li>
     {#                        {% if bye_msg  %}#}
     {#                            <div class="uk-alert-primary" uk-alert>#}
     {#                                <a class="uk-alert-close" uk-close></a>#}
@@ -92,7 +99,7 @@
     {#                        {% endif %}#}
                         {% else  %}
                         <!-- Login Modal --->
-                        <li><a href="#modal-example" uk-toggle>로그인</a></li>
+                        <li class="navbar-links"><a href="#modal-example" uk-toggle>로그인</a></li>
                             <div id="modal-example" uk-modal>
                                 <div class="uk-modal-dialog">
                                     <button class="uk-modal-close-default" type="button" uk-close></button>
@@ -150,7 +157,7 @@
                             </div>
                             <!-- Modal End -->
 
-                        <li><a href="#">회원가입</a></li>
+                        <li class="navbar-links"><a href="#">회원가입</a></li>
                         {% endif %}
                     </ul>
 
@@ -177,6 +184,7 @@
     <!-- 이 부분만 내용을 바꾸면 됨 -->
 {% endblock %}
 </main>
+<script src="/static/js/toggle.js"></script>
 {% block footer %}
 {% endblock footer %}
 </body>

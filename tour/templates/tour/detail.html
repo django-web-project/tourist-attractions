@@ -4,7 +4,7 @@
 <div class="uk-section-xsmall">
 <div class="uk-container">
 <!-- 관광지 상세 설명 -->
-    <article class="uk-comment uk-comment-primary">
+    <article class="uk-comment uk-comment-primary uk-margin-large-top">
         <header class="uk-comment-header">
             <button class="uk-button uk-button-default uk-align-right">날씨 확인</button>
             <!-- dropdown 안에 만들어둔 표 집어 넣기 -->
@@ -110,7 +110,7 @@
                         <header class="uk-comment-header uk-position-relative">
                             <div class="uk-grid-medium uk-flex-middle">
                                 <div class="uk-width-auto">
-                                    <img class="uk-comment-avatar uk-align-right" src="/static/img/profile_pics/{{ review.profile.image }}" width="80" height="80" alt="">
+                                    <img class="uk-comment-avatar uk-align-right" src="/static/img/{{ review.profile.image }}" width="80" height="80" alt="">
                                 </div>
                                 <div class="uk-width-expand">
                                     <h4 class="uk-comment-title uk-margin-remove uk-align-left">작성자 : {{ review.username }}</h4><br><br>
@@ -137,7 +137,7 @@
         <div class="uk-card uk-card-default uk-card-body">
             <p>이미 작성한 리뷰가 있습니다</p>
             <p>작성하신 리뷰를 수정하러 가시겠습니까?</p>
-            <button class="uk-button uk-button-primary">수정하기</button>
+            <a href="{% url 'account:my_list' %}"><button class="uk-button uk-button-primary">수정하기</button></a>
         </div>
     {% elif user.is_authenticated %}
         <div class="uk-card uk-card-default uk-card-body">

@@ -11,10 +11,12 @@ urlpatterns = [
     path('setting/', views.profile, name='profile'),
     path('profileUpdate/', views.profile_update, name='profile_update'),
     path('my-list/', views.my_list, name='my_list'),
-    path('myReviewEdit/', views.my_review_edit, name='my_review_edit'),
-    path('myRatingEdit/', views.my_rating_edit, name='my_rating_edit'),
-    path('myListDelete/', views.my_list_delete, name='my_list_delete'),
-    path('deleteAll/', views.delete_all, name='delete_all')
+    path('myListUpdate/', views.my_list_update, name='my_list_update'),
+    # path('myReviewEdit/', views.my_review_edit, name='my_review_edit'),
+    # path('myRatingEdit/', views.my_rating_edit, name='my_rating_edit'),
+    # path('myListDelete/', views.my_list_delete, name='my_list_delete'),
+    # path('deleteAll/', views.delete_all, name='delete_all'),
+    # path('filterCards/', views.filter_cards, name='fiter_cards'),
 ]
 
 # Debug Mode

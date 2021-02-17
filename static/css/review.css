@@ -8,35 +8,27 @@
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
-.heart-outer {
-    position: relative;
-    display: inline-block;
+
+.hearts-wrapper {
+    display: flex;
 }
 
-.hearts-inner {
-    position: absolute;
-    top: 0;
-    left: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 0;
-}
-
-.hearts-outer::before {
-    content: "\f004  \f004  \f004  \f004  \f004";
+.heart::before {
+    content: "\f004";
     font-family: "Font Awesome 5 Free";
     font-weight: 900;
     font-size: 2em;
+    margin-right: 10px;
+}
+
+.heart-gray::before {
     color: #ccc;
 }
 
-.hearts-inner::before {
-    content: "\f004 \f004 \f004 \f004 \f004";
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
+.heart-red::before {
     color: #fc036f;
 }
 
@@ -47,4 +39,12 @@
     font-weight: bold;
     margin-top: 5px;
     text-align: right;
+}
+
+.new-textarea {
+    margin-top: 30px;
+}
+
+li, ul {
+    list-style: none;
 }

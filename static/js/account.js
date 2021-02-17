@@ -6,3 +6,5 @@ $('#id_review').on('click', function() {
     window.history.pushState({}, "", "/account/my-list/");
 })
 
+
+

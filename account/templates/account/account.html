@@ -6,7 +6,7 @@
 {% endblock head %}
 
 {% block container %}
-<div class="uk-section">
+<div class="uk-section-large">
     <div class="uk-container">
         <ul uk-tab>
             <li id="id_profile"><a href="{% url 'account:profile' %}">프로필 설정</a></li>
@@ -92,131 +92,138 @@
                     </div>
                 {% else %}
                     <!-- 전체 선택 및 필터링 -->
-                    <div class="uk-container ">
-                        <div class="uk-margin">
-                            <div class="uk-child-width-1-2 uk-text-center" uk-grid>
-                                <div class="uk-form-controls">
-                                    <select class="uk-select" id="filter-review-{{ user.id }}">
-                                        <option value="0" disabled selected>필터링</option>
-                                        <option value="1">최신 순</option>
-                                        <option value="2">평점 높은 순</option>
-                                        <option value="3">평점 낮은 순</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <div class="uk-flex-right" uk-grid>
-                                        <div>
-                                            <button class="uk-button uk-button-primary uk-border-rounded selectAll-btn" onclick="changeToCheckbox()">전체선택</button>
-                                            <button class="uk-button uk-button-danger uk-border-rounded uk-margin-left deleteAll-btn" disabled onclick="deleteAll({{ rt.id }})">삭제</button>
+
+                        <div class="uk-container ">
+                            <div class="uk-margin">
+                                <div class="uk-child-width-1-2 uk-text-center" uk-grid>
+    {#                                    <div class="uk-form-controls">#}
+    {#                                    <select class="uk-select" id="filter-review-{{ user.id }}" onchange="filterCard()">#}
+    {#                                        <option value="0" disabled selected>필터링</option>#}
+    {#                                        <option value="1">최신 순</option>#}
+    {#                                        <option value="2">평점 높은 순</option>#}
+    {#                                        <option value="3">평점 낮은 순</option>#}
+    {#                                    </select>#}
+    {#                                    </div>#}
+                                    <div>
+                                        <div class="uk-flex-right" uk-grid>
+                                            <div>
+                                                <button class="uk-button uk-button-primary uk-border-rounded selectAll-btn" onclick="changeToCheckbox()">전체선택</button>
+                                                <button class="uk-button uk-button-danger uk-border-rounded uk-margin-left deleteAll-btn" disabled onclick="deleteAll({{ rt.id }})">삭제</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    {% for rt in review_toursite %}
-                        <div class="uk-margin">
-                            <article class="uk-comment uk-comment-primary uk-box-shadow-small card-article">
-                                {% csrf_token %}
-                                <button id="delete-btn-{{ rt.id }}" class="uk-close-large uk-float-right" type="button" uk-close onclick="deleteCard({{ rt.id }})"></button> <!-- X 삭제 버튼 -->
-                                <input class="uk-checkbox uk-float-right checkAll-btn hidden" value="{{ rt.id }}" id="checked-box-{{ rt.id }}"
-                                       data-delete-selection='{{ rt.id }}' type="checkbox" checked>
-                                <header class="uk-comment-header">
-                                    <div class="uk-grid-medium uk-flex-middle" uk-grid>
-                                        <div class="uk-width-auto">
-                                            <a class="uk-link-reset" href="{% url 'tour:detail' rt.toursite_id %}"><img class="uk-comment-avatar" src="{{ rt.toursite.toursite_img }}" width="80" height="80" alt=""></a>
-                                        </div>
-                                        <div class="uk-width-expand">
-                                            <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-heading" href="{% url 'tour:detail' rt.toursite_id %}">{{ rt.toursite.toursite_name }}</a></h4>
-                                            <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
-                                                <li>{{ rt.review_date|date:"Y-m-d" }}</li>
-    {#                                            <li>Edited</li>#} <!-- if 한번이라도 수정했으면 추가 -->
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </header>
-                                <div class="uk-comment-body">
-                                <!-- 업데이트 메세지 -->
-                                    {% if request.session.edited_msg  %}
-                                        <div class="uk-alert-primary" uk-alert>
-                                            <a class="uk-alert-close" uk-close></a>
-                                            <p class="uk-text-small">{{ request.session.updated_msg }}</p>
-                                        </div>
-                                    {% endif %}
-                                    <form action="/account/mylistUpdate/" method="POST" enctype="multipart/form-data" class="uk-form-stacked rate-form">
+                        {% for rt in page_obj %}
+                            <div class="uk-margin">
+                                <article class="uk-comment uk-comment-primary uk-box-shadow-small card-article">
                                     {% csrf_token %}
-                                        <table class="uk-table uk-table-divider uk-table-hover">
-                                            <tbody class="review-table">
-                                                <tr class="review-text">
-                                                    <td class="uk-table-expand uk-table-link">
-                                                        <a class="uk-link-heading" id="review-link-{{ rt.id }}" href="{% url 'tour:detail' rt.toursite_id %}">{{ rt.review_content }}</a> <!-- 수정 전 리뷰 -->
-                                                        <div class="uk-form-controls uk-margin-left">
-                                                            <div class="review-form-wrapper-{{ rt.id }} hidden"> <!-- wrapper hidden[0] -->
-                     <!--수정을 위한 리뷰 박스-->                <input type="text" class="uk-input new-textarea" name="review-text-{{ rt.id }}" required id="review-text-{{ rt.id }}" value="{{ rt.review_content }}">
-                                                                <div class="text-remaining-chars uk-margin-bottom uk-align-right">/100</div>
+                                    <button id="delete-btn-{{ rt.id }}" class="uk-close-large uk-float-right" type="button" uk-close onclick="deleteCard({{ rt.id }})"></button> <!-- X 삭제 버튼 -->
+                                    <input class="uk-checkbox uk-float-right checkAll-btn hidden" value="{{ rt.id }}" id="checked-box-{{ rt.id }}"
+                                           data-delete-selection='{{ rt.id }}' type="checkbox" checked>
+                                    <header class="uk-comment-header">
+                                        <div class="uk-grid-medium uk-flex-middle" uk-grid>
+                                            <div class="uk-width-auto">
+                                                <a class="uk-link-reset" href="{% url 'tour:detail' rt.toursite_id %}"><img class="uk-comment-avatar" src="{{ rt.toursite.toursite_img }}" width="80" height="80" alt=""></a>
+                                            </div>
+                                            <div class="uk-width-expand">
+                                                <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-heading" href="{% url 'tour:detail' rt.toursite_id %}">{{ rt.toursite.toursite_name }}</a></h4>
+                                                <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
+                                                    <li>{{ rt.review_date|date:"Y-m-d" }}</li>
+        {#                                            <li>Edited</li>#} <!-- if 한번이라도 수정했으면 추가 -->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </header>
+                                    <div class="uk-comment-body">
+                                    <!-- 업데이트 메세지 -->
+                                        {% if request.session.edited_msg  %}
+                                            <div class="uk-alert-primary" uk-alert>
+                                                <a class="uk-alert-close" uk-close></a>
+                                                <p class="uk-text-small">{{ request.session.updated_msg }}</p>
+                                            </div>
+                                        {% endif %}
+                                        <form action="/account/myListUpdate/" method="POST" enctype="multipart/form-data" class="uk-form-stacked rate-form">
+                                        {% csrf_token %}
+                                            <table class="uk-table uk-table-divider uk-table-hover">
+                                                <tbody class="review-table">
+                                                    <tr class="review-text">
+                                                        <td class="uk-table-expand uk-table-link">
+                                                            <a class="uk-link-heading" id="review-link-{{ rt.id }}" href="{% url 'tour:detail' rt.toursite_id %}">{{ rt.review_content }}</a> <!-- 수정 전 리뷰 -->
+                                                            <div class="uk-form-controls uk-margin-left">
+                                                                <div class="review-form-wrapper-{{ rt.id }} hidden"> <!-- wrapper hidden[0] -->
+                         <!--수정을 위한 리뷰 박스-->                <input type="text" class="uk-input new-textarea" name="review-text-{{ rt.id }}" required id="review-text-{{ rt.id }}" value="{{ rt.review_content }}">
+                                                                    <div class="text-remaining-chars uk-margin-bottom uk-align-right">/100</div>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                    <td id="edit_review" class="uk-flex-right">
-                                                        <div class="uk-align-right">
-                                                            <a id="edit-review-btn-{{ rt.id }}" class="uk-icon-button uk-margin-small-right" uk-icon="pencil" onclick="editReview({{ rt.id }})"></a>
-                                                            <div class="review-form-wrapper-{{ rt.id }} hidden"> <!-- wrapper hidden[1] -->
-                                                                <a id="cancel-review-{{ rt.id }}" class="uk-link-text uk-margin-right" onclick="cancelReview({{ rt.id }})">취소</a>
-                                                                <a id="save-review-{{ rt.id }}" class="uk-link-text uk-margin-right" type="submit" onclick="saveReview({{ rt.id }})">저장</a>
+                                                        </td>
+                                                        <td id="edit_review" class="uk-flex-right">
+                                                            <div class="uk-align-right">
+                                                                <a id="edit-review-btn-{{ rt.id }}" class="uk-icon-button uk-margin-small-right" uk-icon="pencil" onclick="editReview({{ rt.id }})"></a>
+                                                                <div class="review-form-wrapper-{{ rt.id }} hidden"> <!-- wrapper hidden[1] -->
+                                                                    <a id="cancel-review-{{ rt.id }}" class="uk-link-text uk-margin-right" onclick="cancelReview({{ rt.id }})">취소</a>
+                                                                    <a id="save-review-{{ rt.id }}" class="uk-link-text uk-margin-right" type="submit" onclick="saveReview({{ rt.id }})">저장</a>
+                                                                </div>
                                                             </div>
-                                                        </div>
 
-                                                    </td>
-                                                </tr>
-                                                <tr class="review_rating">
-                                                    <td class="uk-table-expand hearts_number">
-                                                        <a class="uk-link-heading" id="rating-point-{{ rt.id }}" href="{% url 'tour:detail' rt.toursite_id %}">{{ rt.review_rate }}점</a>
-                                                        <!-- HEART SHAPE -->
-    {#                                                    <div class="hearts-outer" id="rating-point-{{ rt.id }}">#}
-    {#                                                        <div class="hearts-number hidden">{{ rt.review_rate }}</div>#}
-    {#                                                        <div class="hearts-inner"></div>#}
-    {#                                                    </div>#}
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="review_rating">
+                                                        <td class="uk-table-expand hearts_number">
+    {#                                                        <a class="uk-link-heading" id="rating-point-{{ rt.id }}" href="{% url 'tour:detail' rt.toursite_id %}">{{ rt.review_rate }}점</a>#}
+                                                            <!-- HEART SHAPE -->
+                                                            <div class="hearts-wrapper">
+                                                                <div class="heart heart-{% if rt.review_rate >= 1 %}red{% else %}gray{% endif %}" id="rating-point-{{ rt.id }}"></div>
+                                                                <div class="heart heart-{% if rt.review_rate >= 2 %}red{% else %}gray{% endif %}" id="rating-point-{{ rt.id }}"></div>
+                                                                <div class="heart heart-{% if rt.review_rate >= 3 %}red{% else %}gray{% endif %}" id="rating-point-{{ rt.id }}"></div>
+                                                                <div class="heart heart-{% if rt.review_rate >= 4 %}red{% else %}gray{% endif %}" id="rating-point-{{ rt.id }}"></div>
+                                                                <div class="heart heart-{% if rt.review_rate >= 5 %}red{% else %}gray{% endif %}" id="rating-point-{{ rt.id }}"></div>
 
-                                                        <div class="uk-form-controls uk-align-left">
-                                                            <div class="rating-form-wrapper-{{ rt.id }} hidden"> <!-- wrapper hidden[0] -->
-                                                                <select class="uk-select uk-width-medium" id="select-rating-{{ rt.id }}">
-                                                                    <option value="0" disabled selected>평점선택</option>
-                                                                    <option value="5">5점</option>
-                                                                    <option value="4">4점</option>
-                                                                    <option value="3">3점</option>
-                                                                    <option value="2">2점</option>
-                                                                    <option value="1">1점</option>
-                                                                </select>
-                                                            </div> <!-- wrapper hidden -->
-                                                        </div>
-                                                    </td>
-                                                    <td id="edit_rating" class="uk-flex-right">
-                                                        <div class="uk-align-right">
-                                                            <a id="edit-rating-btn-{{ rt.id }}" class="uk-icon-button uk-margin-small-right" uk-icon="pencil" onclick="editRating({{ rt.id }})"></a>
-                                                            <div class="rating-form-wrapper-{{ rt.id }} hidden"> <!-- wrapper hidden[1] -->
-                                                                <a id="cancel-rating-{{ rt.id }}" class="uk-link-text uk-margin-right" onclick="cancelRating({{ rt.id }})">취소</a>
-                                                                <a id="save-rating-{{ rt.id }}" class="uk-link-text uk-margin-right" type="submit" onclick="saveRating({{ rt.id }})">저장</a>
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody> <!-- review-table -->
-                                        </table>
-                                    </form> <!-- review edit form -->
-                                </div>
-                            </article>
-                        </div> <!-- review margin -->
-                    {% endfor %}
+                                                                <!-- <div class="hearts-number hidden">{{ rt.review_rate }}</div>
+                                                                <div class="hearts-inner"></div> -->
+
+                                                            <div class="uk-form-controls uk-align-left">
+                                                                <div class="rating-form-wrapper-{{ rt.id }} hidden"> <!-- wrapper hidden[0] -->
+                                                                    <select class="uk-select uk-width-medium" id="select-rating-{{ rt.id }}">
+                                                                        <option value="0" disabled selected>평점선택</option>
+                                                                        <option value="5">5점</option>
+                                                                        <option value="4">4점</option>
+                                                                        <option value="3">3점</option>
+                                                                        <option value="2">2점</option>
+                                                                        <option value="1">1점</option>
+                                                                    </select>
+                                                                </div> <!-- wrapper hidden -->
+                                                            </div>
+                                                        </td>
+                                                        <td id="edit_rating" class="uk-flex-right">
+                                                            <div class="uk-align-right">
+                                                                <a id="edit-rating-btn-{{ rt.id }}" class="uk-icon-button uk-margin-small-right" uk-icon="pencil" onclick="editRating({{ rt.id }})"></a>
+                                                                <div class="rating-form-wrapper-{{ rt.id }} hidden"> <!-- wrapper hidden[1] -->
+                                                                    <a id="cancel-rating-{{ rt.id }}" class="uk-link-text uk-margin-right" onclick="cancelRating({{ rt.id }})">취소</a>
+                                                                    <a id="save-rating-{{ rt.id }}" class="uk-link-text uk-margin-right" type="submit" onclick="saveRating({{ rt.id }})">저장</a>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody> <!-- review-table -->
+                                            </table>
+                                        </form> <!-- review edit form -->
+                                    </div>
+                                </article>
+                            </div> <!-- review margin -->
+                        {% endfor %}
 
                     <!-- pagination -->
-                    <div class="uk-container">
+                    <div class="uk-container uk-pagination uk-flex-center">
                         {% if page_obj.has_previous %}
                             <button class="uk-button"><a href="?page=1"><span class="uk-margin-small-right" uk-pagination-previous></span> First</a></button>
-                            <button class="uk-margin-auto-left uk-button"><a href="?page={{ page_obj.previous_page_number }}">Previous <span class="uk-margin-small-left" uk-pagination-next></span></a></button>
+                            <button class="uk-button"><a href="?page={{ page_obj.previous_page_number }}"><span class="uk-margin-small-left" uk-pagination-previous></span></a></button>
                         {% endif %}
 
-                        {% for num in page_obj.paginator.page_range%}
+                        {% for num in page_list%}
                             {% if page_obj.number == num %}
                                 <button class="uk-button uk-active"><a href="?page={{ num }}">{{ num }}</a></button>
                             {% elif num > page_obj.number|add:'-3' and  num < page_obj.number|add:'3'%}
@@ -224,8 +231,8 @@
                             {% endif %}
                         {% endfor %}
                         {% if page_obj.has_next %}
-                            <button class="uk-button"><a href="?page={{ page_obj.next_page_number }}"><span class="uk-margin-small-right" uk-pagination-previous></span> Next</a></button>
-                            <button class="uk-button" class="uk-margin-auto-left"><a href="?page={{ page_obj.paginator.num_pages }}">Last <span class="uk-margin-small-left" uk-pagination-next></span></a></button>
+                            <button class="uk-button"><a href="?page={{ page_obj.next_page_number }}"><span class="uk-margin-small-right" uk-pagination-next></span></a></button>
+                            <button class="uk-button"><a href="?page={{ page_obj.paginator.num_pages }}">Last <span class="uk-margin-small-left" uk-pagination-next></span></a></button>
                         {% endif %}
                     </div> <!-- Pagination -->
                 </li> <!-- review content-->
