@@ -128,7 +128,7 @@
                                             <a class="uk-link-reset" href="{% url 'tour:detail' rt.toursite_id %}"><img class="uk-comment-avatar" src="{{ rt.toursite.toursite_img }}" width="80" height="80" alt=""></a>
                                         </div>
                                         <div class="uk-width-expand">
-                                            <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-reset" href="{% url 'tour:detail' rt.toursite_id %}">{{ rt.toursite.toursite_name }}</a></h4>
+                                            <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-heading" href="{% url 'tour:detail' rt.toursite_id %}">{{ rt.toursite.toursite_name }}</a></h4>
                                             <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
                                                 <li>{{ rt.review_date|date:"Y-m-d" }}</li>
     {#                                            <li>Edited</li>#} <!-- if 한번이라도 수정했으면 추가 -->
