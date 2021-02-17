@@ -1,5 +1,5 @@
-body, html{
-    background: #ffddd2;
+body, html {
+    background-color: #ffddd2;
 }
 
 .search{
@@ -51,6 +51,8 @@ body, html{
 }
 
 .content_base {
+    font-family: system-ui, serif;
+    font-size: 2rem;
     border: 2px solid lightgray;
     border-radius: 0.5rem;
 }
@@ -96,5 +98,4 @@ body, html{
     .navbar-links.active {
         display: flex;
     }
-
 }
