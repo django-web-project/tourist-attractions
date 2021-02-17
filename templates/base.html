@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.16/dist/js/uikit-icons.min.js"></script>
 
     <!-- static/css -->
-    <link rel="stylesheet" href="/static/css/index.css?a">
+    <link rel="stylesheet" href="/static/css/index.css?acb">
     {% block head %}
     {% endblock head %}
 </head>
@@ -24,10 +24,10 @@
     <div class="uk-position-top uk-padding">
         <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
             <nav class="uk-navbar-container" uk-navbar>
-                <div class="uk-navbar-center">
-                    <div class="uk-section-xsmall" >
-                        <div class="uk-container content_base">
-                            <form class="uk-search uk-search-navbar" action="." method="post">
+                <div class="uk-navbar-center uk-search">
+                    <div class="uk-section-xsmall uk-search">
+                        <div class="uk-container content_base uk-search">
+                            <form class="uk-search uk-search-navbar" action="/tour/search/" method="post">
                                 {% csrf_token %}
                                     <span uk-search-icon></span>
                                     <input class="uk-search-input" type="text" name="search_kw" placeholder=" {{ search_keyword }}">

@@ -1,3 +1,7 @@
+body, html {
+    background-color: #ffddd2;
+}
+
 .search{
     display: flex;
     justify-content: center;
@@ -47,6 +51,8 @@
 }
 
 .content_base {
+    font-family: system-ui, serif;
+    font-size: 2rem;
     border: 2px solid lightgray;
-  border-radius: 0.5rem;
+    border-radius: 0.5rem;
 }
