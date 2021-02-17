@@ -111,9 +111,9 @@ def my_review_edit(request):
             print(review_text)
             review.review_content = review_text
             review.save()
-            return redirect('account:profile')
+            return redirect('account:my_list')
     request.session['edited_msg'] = f'👏🏼 리뷰가 성공적으로 업데이트 되었습니다!'
-    return redirect('account:profile')
+    return redirect('account:my_list')
 
 
 @login_required
@@ -127,10 +127,10 @@ def my_rating_edit(request):
         print(rating_score)
         rating.review_rate = rating_score
         rating.save()
-        return redirect('account:profile')
+        return redirect('account:my_list')
 
     request.session['edited_msg'] = f'👏🏼 평점이 성공적으로 업데이트 되었습니다!'
-    return redirect('account:profile')
+    return redirect('account:my_list')
 
 
 @login_required
@@ -143,10 +143,12 @@ def my_list_delete(request):
         if 'r_id' in request.GET:
             print(r_id)
             review.delete()
-            return redirect('account:profile')
+            return redirect('account:my_list')
 
-    return redirect('account:profile')
+    return redirect('account:my_list')
 
+
+@login_required
 def delete_all(request):
     json_str = request.GET['card_list']
     obj = json.loads(json_str)
@@ -157,4 +159,4 @@ def delete_all(request):
             review = Review.objects.get(pk=id)
             review.delete()
 
-    return redirect('account:profile')
+    return redirect('account:my_list')

@@ -13,7 +13,8 @@ SECRET_KEY = '45mic#%w^1sal!rg-y!5$&4p*27b8^r1llguqmy81!@50094#7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -27,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tour.apps.TourConfig',
     'account.apps.AccountConfig',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -37,6 +39,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsPostCsrfMiddleware',
+
 ]
 
 ROOT_URLCONF = 'DjangoSeoul.urls'
@@ -121,3 +126,6 @@ MEDIA_URL = '/img/'
 
 # login?
 LOGIN_URL = 'account:check_login'
+
+# API request error; CORS headers
+CORS_ORIGIN_ALLOW_ALL = True

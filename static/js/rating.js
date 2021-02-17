@@ -100,7 +100,7 @@ function deleteCard(r_id) {
         $(deleteBtn).closest('.card-article').remove();
 
         $.ajax({
-            url: "http://localhost:8000/account/myListDelete/",
+            url: "http://localhost:8000/account/myListDelete",
             type: "get",
             data: {
                 r_id: r_id
