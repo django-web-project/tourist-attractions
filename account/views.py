@@ -152,7 +152,7 @@ def my_list_update(request):
         for id in obj:
             review = Review.objects.get(pk=id)
             review.delete()
-            return redirect('account:my_list')
+        return redirect('account:my_list')
 
     else:
         return redirect('account:my_list')
