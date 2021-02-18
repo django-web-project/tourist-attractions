@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 
+{% block head %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css" integrity="sha384-vSIIfh2YWi9wW0r9iZe7RJPrKwp6bG+s9QZMoITbCckVJqGCCRhc+ccxNcdpHuYu" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/detail.css">
+{% endblock head %}
+
 {% block container %}
 <div class="uk-section-xsmall">
 <div class="uk-container">
@@ -114,8 +119,14 @@
                                 </div>
                                 <div class="uk-width-expand">
                                     <h4 class="uk-comment-title uk-margin-remove uk-align-left">작성자 : {{ review.username }}</h4><br><br>
-                                    <p class="uk-comment-meta uk-margin-remove uk-align-left">작성 날짜 : {{ review.review_date }}</p><br>
-                                    <p class="uk-comment-meta uk-margin-remove uk-align-left">점수 : {{ review.review_rate }}</p>
+                                    <p class="uk-comment-meta uk-margin-remove uk-align-left">{{ review.review_date }}</p><br>
+                                    <div class="review">
+                                        <div class="heart heart-{% if review.review_rate >= 1 %}red{% else %}gray{% endif %}" id="rating-point-{{ review.id }}"></div>
+                                        <div class="heart heart-{% if review.review_rate >= 2 %}red{% else %}gray{% endif %}" id="rating-point-{{ review.id }}"></div>
+                                        <div class="heart heart-{% if review.review_rate >= 3 %}red{% else %}gray{% endif %}" id="rating-point-{{ review.id }}"></div>
+                                        <div class="heart heart-{% if review.review_rate >= 4 %}red{% else %}gray{% endif %}" id="rating-point-{{ review.id }}"></div>
+                                        <div class="heart heart-{% if review.review_rate >= 5 %}red{% else %}gray{% endif %}" id="rating-point-{{ review.id }}"></div>
+                                    </div>
                                 </div>
                             </div>
                         </header>
@@ -146,25 +157,15 @@
                 <legend class="uk-legend">리뷰작성</legend>
                 <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
                     <p>평점 :</p>
-                    <label><input class="uk-radio" type="radio" name="my_choice" value="1">1점</label>
-                    <label><input class="uk-radio" type="radio" name="my_choice" value="2">2점</label>
-                    <label><input class="uk-radio" type="radio" name="my_choice" value="3">3점</label>
-                    <label><input class="uk-radio" type="radio" name="my_choice" value="4">4점</label>
-                    <label><input class="uk-radio" type="radio" name="my_choice" value="5">5점</label>
+                    <label><input class="uk-radio" type="radio" name="my_choice" value="1"> 1점</label>
+                    <label><input class="uk-radio" type="radio" name="my_choice" value="2"> 2점</label>
+                    <label><input class="uk-radio" type="radio" name="my_choice" value="3"> 3점</label>
+                    <label><input class="uk-radio" type="radio" name="my_choice" value="4"> 4점</label>
+                    <label><input class="uk-radio" type="radio" name="my_choice" value="5"> 5점</label>
                 </div>
-                <script language="javascript">
-                    function len_chk(){
-                        let frm = document.reviewForm.my_review;
-                        if(frm.value.length > 100){
-                            alert("글자수는 100자로 제한됩니다.");
-                            frm.value = frm.value.substring(0,100);
-                            frm.focus();
-                        }
-                    }
-                </script>
                 <div class="uk-margin">
-                    <textarea class="uk-textarea" rows="3" placeholder="100자 제한" name="my_review"
-                    onkeyup="len_chk()"></textarea>
+                    <input type="text" class="uk-input new-textarea" name="my_review" onkeydown="addTextInputEventListeners()">
+                    <div class="text-remaining-chars uk-margin-bottom uk-align-right">/100</div>
                 </div>
                 <button class="uk-button uk-button-primary" type="submit">저장</button>
             </form>
@@ -174,8 +175,13 @@
 
 <!-- TOTOP 상단으로 바로 가기 -->
 <br><br>
+
 <a href="" uk-totop uk-scroll></a>
 
 </div>
 </div>
 {% endblock %}
+
+{% block footer %}
+<script src="/static/js/detail.js"></script>
+{% endblock footer %}

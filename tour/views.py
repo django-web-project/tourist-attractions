@@ -97,6 +97,8 @@ def get_weather_data(x, y):
     time_list = []
     for a in result['response']['body']['items']['item']:
         # 버전 5.1 시간 형태만 조금 바꿈
+        if a['fcstTime'] == '0000':
+            time_list.append('00')
         time_list.append(a['fcstTime'].replace('00', ''))
     time_list = list(set(time_list))
     time_list.sort()

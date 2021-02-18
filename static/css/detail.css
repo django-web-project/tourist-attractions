@@ -1,0 +1,19 @@
+.heart::before {
+    content: "\f004";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 2em;
+    margin-right: 10px;
+}
+
+.heart-gray::before {
+    color: #ccc;
+}
+
+.heart-red::before {
+    color: #fc036f;
+}
+
+.review{
+    display: flex;
+}
