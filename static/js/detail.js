@@ -16,9 +16,5 @@ function addTextInputEventListeners() {
             newText[0].focus()
         }
     }
-
-    newText[0].addEventListener("input", () => {
-       test()
-    });
     test();
 }
