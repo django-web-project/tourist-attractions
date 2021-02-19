@@ -18,8 +18,8 @@ function editReview(r_id) {
 
     // Text Counter
     function addTextInputEventListeners() {
-        const newText= document.getElementsByClassName('new-textarea');
-        const remainingText = document.getElementsByClassName('text-remaining-chars')[0];
+        const newText= document.getElementsByClassName(`new-textarea-${r_id}`);
+        const remainingText = document.getElementsByClassName(`text-remaining-chars-${r_id}`)[0];
         const MAX_CHARS = 100;
 
         function test() {
@@ -79,7 +79,7 @@ function cancelReview(r_id) {
 function editRating(r_id) {
     let editBtn = document.getElementById(`edit-rating-btn-${r_id}`)
     let ratingWrapper = document.getElementsByClassName(`rating-form-wrapper-${r_id}`)
-    let heartsWrapper = document.getElementsByClassName('hearts-wrapper')
+    let heartsWrapper = document.getElementsByClassName(`hearts-wrapper-${r_id}`)
 
     if(ratingWrapper[0].classList.contains('hidden')) {
         ratingWrapper[0].classList.remove('hidden')

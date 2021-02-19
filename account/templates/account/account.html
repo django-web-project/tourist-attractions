@@ -152,9 +152,9 @@
                                                         <td class="uk-table-expand uk-table-link">
                                                             <a class="uk-link-heading" id="review-link-{{ rt.id }}" href="{% url 'tour:detail' rt.toursite_id %}">{{ rt.review_content }}</a> <!-- 수정 전 리뷰 -->
                                                             <div class="uk-form-controls uk-margin-left">
-                                                                <div class="review-form-wrapper-{{ rt.id }} hidden"> <!-- wrapper hidden[0] -->
-                         <!--수정을 위한 리뷰 박스-->                <input type="text" class="uk-input new-textarea" name="review-text-{{ rt.id }}" required id="review-text-{{ rt.id }}" value="{{ rt.review_content }}">
-                                                                    <div class="text-remaining-chars uk-margin-bottom uk-align-right">/100</div>
+                                                                <div class="review-form-wrapper-{{ rt.id }} hidden"> <!-- wrapper hidden[1] -->
+                                                                    <a id="cancel-review-{{ rt.id }}" class="uk-link-text uk-margin-right" onclick="cancelReview({{ rt.id }})">취소</a>
+                                                                    <a id="save-review-{{ rt.id }}" class="uk-link-text uk-margin-right" type="submit" onclick="saveReview({{ rt.id }})">저장</a>
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -171,18 +171,15 @@
                                                     </tr>
                                                     <tr class="review_rating">
                                                         <td class="uk-table-expand hearts_number">
-    {#                                                        <a class="uk-link-heading" id="rating-point-{{ rt.id }}" href="{% url 'tour:detail' rt.toursite_id %}">{{ rt.review_rate }}점</a>#}
+                                                            {#                                                        <a class="uk-link-heading" id="rating-point-{{ rt.id }}" href="{% url 'tour:detail' rt.toursite_id %}">{{ rt.review_rate }}점</a>#}
                                                             <!-- HEART SHAPE -->
-                                                            <div class="hearts-wrapper">
+                                                            <div id="hearts-wrapper" class="hearts-wrapper-{{ rt.id }}">
                                                                 <div class="heart heart-{% if rt.review_rate >= 1 %}red{% else %}gray{% endif %}" id="rating-point-{{ rt.id }}"></div>
                                                                 <div class="heart heart-{% if rt.review_rate >= 2 %}red{% else %}gray{% endif %}" id="rating-point-{{ rt.id }}"></div>
                                                                 <div class="heart heart-{% if rt.review_rate >= 3 %}red{% else %}gray{% endif %}" id="rating-point-{{ rt.id }}"></div>
                                                                 <div class="heart heart-{% if rt.review_rate >= 4 %}red{% else %}gray{% endif %}" id="rating-point-{{ rt.id }}"></div>
                                                                 <div class="heart heart-{% if rt.review_rate >= 5 %}red{% else %}gray{% endif %}" id="rating-point-{{ rt.id }}"></div>
-
                                                             </div>
-                                                                <!-- <div class="hearts-number hidden">{{ rt.review_rate }}</div>
-                                                                <div class="hearts-inner"></div> -->
 
                                                             <div class="uk-form-controls uk-align-left">
                                                                 <div class="rating-form-wrapper-{{ rt.id }} hidden"> <!-- wrapper hidden[0] -->

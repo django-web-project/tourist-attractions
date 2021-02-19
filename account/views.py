@@ -27,7 +27,7 @@ def profile(request):
     # Review List
     u_id = request.user.id
     review = Review.objects.filter(user_id=u_id)
-    review_toursite = review.select_related('toursite')
+    review_toursite = review.select_related('toursite').order_by('-review_date')
 
     # 메세지 지우기
     # if request.session['updated_msg']:
